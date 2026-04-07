@@ -1,0 +1,6 @@
+project_name: prodkt-saas
+deployment_provider: vercel
+framework: nextjs
+install_command: npm install
+build_command: next build
+output_directory: .next
