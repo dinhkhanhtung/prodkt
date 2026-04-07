@@ -1,0 +1,21 @@
+Chính sách Bảo mật của SellEasy
+
+1. Lưu trữ dữ liệu
+SellEasy lưu trữ dữ liệu cục bộ trên thiết bị của bạn:
+• Thông tin sản phẩm và kho hàng
+• Dữ liệu giao dịch và doanh thu
+• Cài đặt người dùng
+
+2. Quyền truy cập
+Ứng dụng yêu cầu các quyền:
+• Truy cập bộ nhớ: Lưu trữ dữ liệu
+• Camera: Chụp ảnh sản phẩm
+
+3. Bảo mật dữ liệu
+• Dữ liệu được lưu trữ an toàn trên thiết bị
+• Không thu thập hoặc gửi dữ liệu lên máy chủ
+• Sao lưu dữ liệu định kỳ
+
+4. Liên hệ
+Mọi thắc mắc về bảo mật, vui lòng liên hệ:
+Email: support@selleasey.app 

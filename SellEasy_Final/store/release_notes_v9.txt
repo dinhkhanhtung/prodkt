@@ -1,0 +1,14 @@
+SellEasy - Phiên bản 1.0.2 (Version Code 9)
+
+Phiên bản mới với nhiều cải tiến và tính năng hữu ích:
+
+• Cải thiện hỗ trợ chế độ tối: Tất cả màn hình đã được tối ưu để hiển thị đúng trong chế độ tối, giúp bảo vệ mắt khi sử dụng vào ban đêm
+• Thêm thanh điều hướng dưới cho tất cả màn hình: Giúp chuyển đổi giữa các chức năng dễ dàng hơn
+• Cải thiện giao diện người dùng: Điều chỉnh khoảng cách, màu sắc và bố cục để tăng trải nghiệm người dùng
+• Đổi tên các mục cài đặt: Tên mới rõ ràng và dễ hiểu hơn ("Thiết lập kinh doanh" thay vì "Cài đặt nâng cao")
+• Sắp xếp lại thứ tự các mục cài đặt: Đưa "Thiết lập kinh doanh" lên trên "Sao lưu & Đồng bộ"
+• Sửa lỗi hiển thị trong các form nhập liệu
+• Cải thiện hiệu suất và tốc độ tải ứng dụng
+• Sửa nhiều lỗi nhỏ và cải thiện độ ổn định
+
+Cảm ơn bạn đã sử dụng SellEasy!

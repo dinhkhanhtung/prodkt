@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Include all shared preferences -->
+    <include domain="sharedpref" path="."/>
+    <exclude domain="sharedpref" path="device.xml"/>
+    <!-- Include database files -->
+    <include domain="database" path="."/>
+    <include domain="database" path="selleasy.db"/>
+    <!-- Include files in the app's files directory -->
+    <include domain="file" path="."/>
+</full-backup-content>

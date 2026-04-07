@@ -1,0 +1,166 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new FileNotFoundException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '16'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0.2'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace "com.dinhkhanhtung.selleasy"
+    compileSdkVersion 35
+    ndkVersion "27.0.12077973"
+
+    // Tắt tính năng kiểm tra lớp bị thiếu của R8
+    lintOptions {
+        checkReleaseBuilds false
+    }
+
+    // Cấu hình AAPT
+    aaptOptions {
+        noCompress "tflite"
+    }
+
+    // Cấu hình packaging
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/license.txt', 'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/notice.txt', 'META-INF/ASL2.0']
+        }
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+
+    // Cấu hình dex
+    dexOptions {
+        javaMaxHeapSize "4g"
+        preDexLibraries true
+    }
+
+    // Cấu hình build features
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.dinhkhanhtung.selleasy"
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        manifestPlaceholders = [
+            'appAuthRedirectScheme': 'com.dinhkhanhtung.selleasy',
+            'applicationName': 'io.flutter.app.FlutterApplication'
+        ]
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro', 'src/main/r8-missing-rules.pro'
+
+            // Tạo file mapping cho Google Play Console
+            ndk {
+                debugSymbolLevel 'FULL'
+            }
+
+            // Tạo biểu tượng gỡ lỗi
+            packagingOptions {
+                jniLibs {
+                    keepDebugSymbols += ['**/*.so']
+                }
+            }
+
+            // Lưu file mapping cho ProGuard
+            testProguardFiles 'proguard-rules.pro'
+        }
+
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            zipAlignEnabled false
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // Thay thế thư viện Play Core cũ bằng các thư viện mới
+    implementation 'com.google.android.play:app-update:2.1.0'
+    implementation 'com.google.android.play:review:2.0.1'
+    implementation 'com.google.android.play:feature-delivery:2.1.0'
+
+    // Thêm các thư viện hỗ trợ
+    implementation 'androidx.core:core-ktx:1.12.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
+    implementation 'androidx.activity:activity:1.8.2'
+    implementation 'androidx.activity:activity-ktx:1.8.2'
+}
+
+// Cấu hình để bỏ qua các lỗi về lớp bị thiếu
+configurations.all {
+    resolutionStrategy {
+        force 'com.google.android.play:feature-delivery:2.1.0'
+        force 'com.google.android.play:app-update:2.1.0'
+        force 'com.google.android.play:review:2.0.1'
+    }
+}
