@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  Shield,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -69,6 +70,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               pathname={pathname}
               onLogout={handleLogout}
               onClose={() => setSidebarOpen(false)}
+              user={user}
             />
           </div>
         </div>
@@ -77,7 +79,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
-          <SidebarContent pathname={pathname} onLogout={handleLogout} />
+          <SidebarContent pathname={pathname} onLogout={handleLogout} user={user} />
         </div>
       </div>
 
@@ -117,11 +119,15 @@ function SidebarContent({
   pathname,
   onLogout,
   onClose,
+  user,
 }: {
   pathname: string;
   onLogout: () => void;
   onClose?: () => void;
+  user?: { email?: string | null; role?: string } | null;
 }) {
+  const isAdmin = user?.role === 'admin';
+
   return (
     <>
       <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
@@ -154,7 +160,37 @@ function SidebarContent({
             </Link>
           );
         })}
+
+        {/* Admin Section */}
+        {isAdmin && (
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+              Quản trị
+            </p>
+            <Link
+              href="/admin"
+              onClick={onClose}
+              className={`sidebar-link ${pathname === '/admin' || pathname.startsWith('/admin/') ? 'active' : ''}`}
+            >
+              <Shield className="w-5 h-5" />
+              Bảng điều khiển
+            </Link>
+          </div>
+        )}
       </nav>
+
+      {/* Admin Badge */}
+      {isAdmin && (
+        <div className="px-4 py-3 mx-4 mb-3 bg-gradient-to-r from-violet-50 to-indigo-50 rounded-xl border border-violet-100">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-violet-600" />
+            <div>
+              <p className="text-xs font-semibold text-violet-900">Quản Trị Viên</p>
+              <p className="text-xs text-violet-600">Quyền truy cập hệ thống</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="p-4 border-t border-gray-200">
         <button

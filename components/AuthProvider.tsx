@@ -13,6 +13,7 @@ import { auth, db } from '@/lib/firebase';
 
 interface User extends FirebaseUser {
   storeId?: string;
+  role?: string;
 }
 
 interface AuthContextType {
@@ -39,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const extendedUser: User = {
           ...firebaseUser,
           storeId: userData?.storeId,
+          role: userData?.role,
         };
         setUser(extendedUser);
       } else {
