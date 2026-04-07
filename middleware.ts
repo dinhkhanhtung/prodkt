@@ -2,6 +2,17 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
+  // Protect admin routes
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // Admin routes protection - will be handled client-side by checking user role
+    // Redirect to login if no session
+    const authCookie = request.cookies.get('__session') || request.cookies.get('firebaseToken');
+    
+    if (!authCookie) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
   // Protect dashboard routes
   if (request.nextUrl.pathname.startsWith('/dashboard') || 
       request.nextUrl.pathname.startsWith('/products') ||
@@ -22,5 +33,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/products/:path*', '/customers/:path*', '/suppliers/:path*', '/pos/:path*', '/orders/:path*'],
+  matcher: ['/admin/:path*', '/dashboard/:path*', '/products/:path*', '/customers/:path*', '/suppliers/:path*', '/pos/:path*', '/orders/:path*'],
 };

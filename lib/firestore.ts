@@ -9,6 +9,7 @@ import {
   query,
   where,
   orderBy,
+  limit,
   serverTimestamp,
   DocumentData,
   QueryDocumentSnapshot,
@@ -285,4 +286,197 @@ export async function updateOrder(
 export async function deleteOrder(storeId: string, orderId: string): Promise<void> {
   const docRef = doc(db, 'stores', storeId, COLLECTIONS.ORDERS, orderId);
   await deleteDoc(docRef);
+}
+
+// ==================== PAYMENTS & SUBSCRIPTION ====================
+
+export interface Subscription {
+  plan: 'free' | 'pro' | 'enterprise';
+  status: 'active' | 'expired' | 'pending';
+  startedAt?: string;
+  expiresAt?: string;
+  lastPaymentId?: string;
+}
+
+export interface Payment {
+  userId: string;
+  storeId: string;
+  amount: number;
+  plan: 'monthly' | 'yearly';
+  status: 'pending' | 'verified' | 'rejected' | 'expired';
+  bankCode: string;
+  accountNumber: string;
+  accountName: string;
+  transferContent: string;
+  receiptImage?: string;
+  receiptNote?: string;
+  transferredAt?: string;
+  verifiedBy?: string;
+  verifiedAt?: string;
+  rejectionReason?: string;
+  validUntil: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface BankAccount {
+  bankCode: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  isActive: boolean;
+  isDefault: boolean;
+  qrImageUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Root-level collections (not store-specific)
+const PAYMENTS_COLLECTION = 'payments';
+const BANK_ACCOUNTS_COLLECTION = 'bankAccounts';
+
+export async function createPayment(
+  payment: Omit<Payment, 'createdAt' | 'updatedAt'>
+): Promise<string> {
+  const docRef = await addDoc(collection(db, PAYMENTS_COLLECTION), {
+    ...payment,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function getUserPayments(userId: string): Promise<(Payment & WithId)[]> {
+  const q = query(
+    collection(db, PAYMENTS_COLLECTION),
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => convertDoc<Payment>(doc));
+}
+
+export async function getPendingPayments(): Promise<(Payment & WithId)[]> {
+  const q = query(
+    collection(db, PAYMENTS_COLLECTION),
+    where('status', '==', 'pending'),
+    orderBy('createdAt', 'desc')
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => convertDoc<Payment>(doc));
+}
+
+export async function verifyPayment(
+  paymentId: string,
+  adminId: string,
+  validUntil: string
+): Promise<void> {
+  const docRef = doc(db, PAYMENTS_COLLECTION, paymentId);
+  await updateDoc(docRef, {
+    status: 'verified',
+    verifiedBy: adminId,
+    verifiedAt: new Date().toISOString(),
+    validUntil,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function rejectPayment(
+  paymentId: string,
+  adminId: string,
+  reason: string
+): Promise<void> {
+  const docRef = doc(db, PAYMENTS_COLLECTION, paymentId);
+  await updateDoc(docRef, {
+    status: 'rejected',
+    verifiedBy: adminId,
+    verifiedAt: new Date().toISOString(),
+    rejectionReason: reason,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function uploadPaymentReceipt(
+  paymentId: string,
+  imageUrl: string,
+  note?: string
+): Promise<void> {
+  const docRef = doc(db, PAYMENTS_COLLECTION, paymentId);
+  await updateDoc(docRef, {
+    receiptImage: imageUrl,
+    receiptNote: note || '',
+    transferredAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+// ==================== BANK ACCOUNTS ====================
+
+export async function getBankAccounts(): Promise<(BankAccount & WithId)[]> {
+  const q = query(
+    collection(db, BANK_ACCOUNTS_COLLECTION),
+    where('isActive', '==', true),
+    orderBy('bankName')
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => convertDoc<BankAccount>(doc));
+}
+
+export async function getDefaultBankAccount(): Promise<(BankAccount & WithId) | null> {
+  const q = query(
+    collection(db, BANK_ACCOUNTS_COLLECTION),
+    where('isDefault', '==', true),
+    where('isActive', '==', true),
+    limit(1)
+  );
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  return convertDoc<BankAccount>(snapshot.docs[0]);
+}
+
+export async function addBankAccount(
+  account: Omit<BankAccount, 'createdAt' | 'updatedAt'>
+): Promise<string> {
+  const docRef = await addDoc(collection(db, BANK_ACCOUNTS_COLLECTION), {
+    ...account,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function updateBankAccount(
+  accountId: string,
+  account: Partial<BankAccount>
+): Promise<void> {
+  const docRef = doc(db, BANK_ACCOUNTS_COLLECTION, accountId);
+  await updateDoc(docRef, {
+    ...account,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deleteBankAccount(accountId: string): Promise<void> {
+  const docRef = doc(db, BANK_ACCOUNTS_COLLECTION, accountId);
+  await deleteDoc(docRef);
+}
+
+// ==================== USER SUBSCRIPTION ====================
+
+export async function updateUserSubscription(
+  userId: string,
+  subscription: Subscription
+): Promise<void> {
+  const userRef = doc(db, COLLECTIONS.USERS, userId);
+  await updateDoc(userRef, {
+    subscription,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function getUserSubscription(userId: string): Promise<Subscription | null> {
+  const userRef = doc(db, COLLECTIONS.USERS, userId);
+  const userDoc = await getDoc(userRef);
+  if (!userDoc.exists()) return null;
+  return userDoc.data().subscription || null;
 }
