@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { 
   LayoutDashboard, 
@@ -13,9 +13,10 @@ import {
   Menu,
   X,
   Shield,
-  ChevronRight
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const adminNavItems = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, description: 'Dashboard & thống kê' },
@@ -26,9 +27,35 @@ const adminNavItems = [
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
+  const router = useRouter();
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check auth and admin role
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        // Not logged in, redirect to login
+        router.push('/login?redirect=/admin');
+      } else if (user.role !== 'admin') {
+        // Not admin, redirect to dashboard
+        router.push('/dashboard');
+      }
+    }
+  }, [user, loading, router]);
+
+  // Show loading while checking auth
+  if (loading || !user || user.role !== 'admin') {
+    return (
+      <div className="min-h-screen bg-slate-50/50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-violet-600 animate-spin" />
+          <p className="text-slate-500">Đang kiểm tra quyền truy cập...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50/50">
