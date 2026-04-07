@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/components/AuthProvider';
 import { getProducts, addProduct, updateProduct, deleteProduct, Product, WithId } from '@/lib/firestore';
 import { uploadImageToImgBB } from '@/lib/imgbb';
-import { Plus, Edit2, Trash2, Search, Upload, X, ImageIcon } from 'lucide-react';
+import { Plus, Edit2, Trash2, Search, Upload, X, ImageIcon, Package } from 'lucide-react';
 
 interface ProductFormData {
   name: string;
