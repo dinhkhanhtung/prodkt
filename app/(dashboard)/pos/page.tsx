@@ -5,7 +5,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { getProducts, addOrder, Product, WithId } from '@/lib/firestore';
 import { Plus, Minus, Trash2, ShoppingCart, User, X, Search, Calculator } from 'lucide-react';
 
-interface CartItem extends Product {
+interface CartItem extends Product, WithId {
   quantity: number;
 }
 
