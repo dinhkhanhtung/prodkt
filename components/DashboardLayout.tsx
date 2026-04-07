@@ -16,6 +16,11 @@ import {
   X,
   Shield,
   Settings,
+  RefreshCw,
+  Moon,
+  Bell,
+  Plus,
+  ChevronDown,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -34,6 +39,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -70,7 +76,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <div className="fixed inset-y-0 left-0 w-64 bg-white shadow-lg">
             <SidebarContent
               pathname={pathname}
-              onLogout={handleLogout}
               onClose={() => setSidebarOpen(false)}
               user={user}
             />
@@ -81,7 +86,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
-          <SidebarContent pathname={pathname} onLogout={handleLogout} user={user} />
+          <SidebarContent pathname={pathname} user={user} />
         </div>
       </div>
 
@@ -97,21 +102,90 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <Menu className="w-6 h-6" />
             </button>
 
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">{user.email}</span>
-              <button
-                onClick={handleLogout}
-                className="p-2 rounded-md text-gray-600 hover:bg-gray-100"
-                title="Đăng xuất"
+            {/* Right side icons */}
+            <div className="flex items-center gap-2 ml-auto">
+              {/* Refresh */}
+              <button 
+                onClick={() => window.location.reload()}
+                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                title="Làm mới"
               >
-                <LogOut className="w-5 h-5" />
+                <RefreshCw className="w-5 h-5" />
               </button>
+              
+              {/* Dark mode toggle */}
+              <button 
+                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                title="Chế độ tối"
+              >
+                <Moon className="w-5 h-5" />
+              </button>
+              
+              {/* Notifications */}
+              <button 
+                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 transition-colors relative"
+                title="Thông báo"
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              </button>
+
+              {/* User dropdown */}
+              <div className="relative ml-2">
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center font-semibold text-sm">
+                    {user?.email?.charAt(0).toUpperCase() || 'U'}
+                  </div>
+                </button>
+
+                {userDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="font-semibold text-gray-900">Administrator</p>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
+                    </div>
+                    <button
+                      onClick={async () => {
+                        await logout();
+                        router.push('/');
+                      }}
+                      className="w-full flex items-center gap-2 px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Đăng xuất
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
 
         {/* Page content */}
-        <main className="p-4 sm:p-6 lg:p-8">{children}</main>
+        <main className="p-4 sm:p-6 lg:p-8 relative">
+          {children}
+          
+          {/* FAB for quick actions */}
+          <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+            <Link
+              href="/pos"
+              className="flex items-center gap-2 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg shadow-emerald-500/30 transition-all hover:scale-105"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              <span className="font-medium">Bán hàng</span>
+            </Link>
+            <Link
+              href="/products"
+              className="flex items-center gap-2 px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-full shadow-lg shadow-violet-500/30 transition-all hover:scale-105"
+            >
+              <Plus className="w-5 h-5" />
+              <span className="font-medium">Nhập hàng</span>
+            </Link>
+          </div>
+        </main>
       </div>
     </div>
   );
@@ -119,12 +193,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
 function SidebarContent({
   pathname,
-  onLogout,
   onClose,
   user,
 }: {
   pathname: string;
-  onLogout: () => void;
   onClose?: () => void;
   user?: { email?: string | null; role?: string } | null;
 }) {
@@ -193,16 +265,6 @@ function SidebarContent({
           </div>
         </div>
       )}
-
-      <div className="p-4 border-t border-gray-200">
-        <button
-          onClick={onLogout}
-          className="w-full sidebar-link text-red-600 hover:bg-red-50 hover:text-red-700"
-        >
-          <LogOut className="w-5 h-5" />
-          Đăng xuất
-        </button>
-      </div>
     </>
   );
 }
