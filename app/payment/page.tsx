@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
@@ -22,7 +22,7 @@ interface BankAccountWithId extends BankAccount {
   id: string;
 }
 
-export default function PaymentPage() {
+function PaymentContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const plan = searchParams.get('plan') || 'monthly';
@@ -412,5 +412,13 @@ export default function PaymentPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 text-primary-600 animate-spin" /></div>}>
+      <PaymentContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { 
@@ -30,7 +30,7 @@ interface PaymentWithId extends Payment {
   id: string;
 }
 
-export default function AdminPaymentsPage() {
+function AdminPaymentsContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const [payments, setPayments] = useState<PaymentWithId[]>([]);
@@ -440,5 +440,13 @@ export default function AdminPaymentsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminPaymentsPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Đang tải...</div>}>
+      <AdminPaymentsContent />
+    </Suspense>
   );
 }
