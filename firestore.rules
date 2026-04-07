@@ -19,16 +19,31 @@ service cloud.firestore {
       return isAuthenticated() && 
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.storeId == storeId;
     }
+    
+    // Helper to check if this is the first admin setup for specific email
+    function isFirstAdminSetup() {
+      return isAuthenticated() && 
+        request.resource.data.role == 'admin' &&
+        request.resource.data.email == 'geminipro1year@gmail.com';
+    }
 
     // ==================== USERS ====================
     match /users/{userId} {
-      // User can read/write their own data
-      // Admin can read/write all
+      // User can read their own data or admin can read all
       allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
-      allow write: if isAuthenticated() && (isOwner(userId) || isAdmin());
       
-      // Allow create during registration (only for new user)
+      // Allow create during registration
       allow create: if isAuthenticated() && request.auth.uid == userId;
+      
+      // Allow update if:
+      // 1. User updating their own non-role fields
+      // 2. Admin updating any fields  
+      // 3. First admin setup for geminipro1year@gmail.com
+      allow update: if isAuthenticated() && (
+        (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role'])) ||
+        isAdmin() ||
+        isFirstAdminSetup()
+      );
     }
 
     // ==================== STORES ====================
