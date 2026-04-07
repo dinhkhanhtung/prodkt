@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Shield,
+  Settings,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -25,6 +26,7 @@ const navigation = [
   { name: 'Nhà cung cấp', href: '/suppliers', icon: Truck },
   { name: 'Bán hàng POS', href: '/pos', icon: ShoppingCart },
   { name: 'Hóa đơn', href: '/orders', icon: Receipt },
+  { name: 'Cài đặt', href: '/settings', icon: Settings },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {

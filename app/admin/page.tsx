@@ -1,250 +1,327 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
-import { getPendingPayments, Payment, getUserSubscription, Subscription } from '@/lib/firestore';
 import { 
   Users, 
+  MessageSquare, 
+  Send, 
   CreditCard, 
-  TrendingUp, 
-  Clock,
+  Building2,
+  Search,
+  MoreVertical,
   CheckCircle,
-  XCircle,
-  AlertCircle
+  Clock,
+  AlertCircle,
+  Crown,
+  Shield,
+  ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 
-interface DashboardStats {
-  totalUsers: number;
-  proUsers: number;
-  pendingPayments: number;
-  totalRevenue: number;
-}
+// Mock data for feedback
+const FEEDBACK_DATA = [
+  { id: 1, type: 'bug', title: 'Báo lỗi', content: 'Vô hiệu hóa chuyển đổi gói với thành viên của 1 gia đình', status: 'done', date: '2024-01-15' },
+  { id: 2, type: 'feature', title: 'Đề xuất tính năng', content: 'Chưa đăng nhập điện thoại dễ', status: 'done', date: '2024-01-14' },
+  { id: 3, type: 'feature', title: 'Đề xuất tính năng', content: 'Tiền ở ví nếu hết cũng cần có màu đỏ', status: 'done', date: '2024-01-13' },
+  { id: 4, type: 'feature', title: 'Đề xuất tính năng', content: 'ok. Ngon rồi đấy', status: 'done', date: '2024-01-12' },
+  { id: 5, type: 'bug', title: 'Báo lỗi', content: 'ok', status: 'done', date: '2024-01-11' },
+];
 
-export default function AdminDashboard() {
+// Mock data for users
+const USERS_DATA = [
+  { id: 1, name: 'Administrator', email: 'geminipro1year@gmail.com', phone: '0982581222', expiry: 'Vĩnh viễn', status: 'vip', plan: 'VIP' },
+  { id: 2, name: 'Long Tuan', email: 'tranthanhg@gmail.com', phone: '0973539959', expiry: '29/10/2026', status: 'active', plan: 'PRO' },
+  { id: 3, name: 'Khoa Le', email: 'lekhoa123@gmail.com', phone: '0973539959', expiry: '29/10/2026', status: 'active', plan: 'PRO' },
+];
+
+const NOTIFICATION_TEMPLATES = [
+  { value: 'general', label: 'Thông báo Chung' },
+  { value: 'update', label: 'Cập nhật phiên bản' },
+  { value: 'feature', label: 'Tính năng mới' },
+  { value: 'maintenance', label: 'Bảo trì hệ thống' },
+];
+
+const RECIPIENT_OPTIONS = [
+  { value: 'all', label: 'Tất cả thành viên' },
+  { value: 'pro', label: 'Người dùng PRO' },
+  { value: 'free', label: 'Người dùng Free' },
+];
+
+export default function AdminDashboardPage() {
   const { user } = useAuth();
-  const [stats, setStats] = useState<DashboardStats>({
-    totalUsers: 0,
-    proUsers: 0,
-    pendingPayments: 0,
-    totalRevenue: 0,
-  });
-  const [recentPayments, setRecentPayments] = useState<(Payment & { id: string })[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'users' | 'feedback' | 'notifications'>('users');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showInvitedOnly, setShowInvitedOnly] = useState(false);
+  
+  // Notification form state
+  const [notificationTemplate, setNotificationTemplate] = useState('general');
+  const [recipient, setRecipient] = useState('all');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
-    try {
-      // Load pending payments
-      const pending = await getPendingPayments();
-      setRecentPayments(pending.slice(0, 5));
-      
-      // TODO: Add functions to get total stats
-      // For now, use pending count as estimate
-      setStats({
-        totalUsers: 0, // Will be loaded from separate function
-        proUsers: 0,
-        pendingPayments: pending.length,
-        totalRevenue: pending.reduce((sum, p) => sum + (p.status === 'verified' ? p.amount : 0), 0),
-      });
-    } catch (error) {
-      console.error('Error loading dashboard:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const getStatusIcon = (status: string) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'verified':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'rejected':
-        return <XCircle className="w-5 h-5 text-red-500" />;
+      case 'done':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700"><CheckCircle className="w-3 h-3 mr-1" />Đã xong</span>;
       case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
+        return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700"><Clock className="w-3 h-3 mr-1" />Đang xử lý</span>;
+      case 'vip':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-violet-100 text-violet-700 border border-violet-200"><Crown className="w-3 h-3 mr-1" />VIP</span>;
+      case 'active':
+        return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700"><div className="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-1.5" />Hoạt động</span>;
       default:
-        return <AlertCircle className="w-5 h-5 text-gray-500" />;
+        return null;
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'verified':
-        return 'Đã duyệt';
-      case 'rejected':
-        return 'Từ chối';
-      case 'pending':
-        return 'Chờ duyệt';
-      default:
-        return status;
-    }
+  const handleSendNotification = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert('Thông báo đã được gửi!');
+    setTitle('');
+    setContent('');
   };
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500">
-          Xin chào, {user?.email}
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Tổng Users</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.totalUsers}</p>
-            </div>
-            <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">PRO Users</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.proUsers}</p>
-            </div>
-            <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center">
-              <CreditCard className="w-6 h-6 text-primary-600" />
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <h1 className="text-xl font-bold text-slate-900">Bảng điều khiển</h1>
+            <div className="flex items-center gap-4">
+              <Link 
+                href="/admin/payments" 
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+              >
+                <CreditCard className="w-4 h-4" />
+                Thanh toán
+              </Link>
+              <Link 
+                href="/admin/banks" 
+                className="flex items-center gap-2 px-3 py-1.5 text-sm text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+              >
+                <Building2 className="w-4 h-4" />
+                Ngân hàng
+              </Link>
             </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Chờ Duyệt</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.pendingPayments}</p>
-            </div>
-            <div className="w-12 h-12 bg-yellow-50 rounded-lg flex items-center justify-center">
-              <Clock className="w-6 h-6 text-yellow-600" />
-            </div>
-          </div>
-          {stats.pendingPayments > 0 && (
-            <Link 
-              href="/admin/payments"
-              className="mt-3 inline-flex items-center text-sm text-primary-600 hover:text-primary-700"
+          {/* Tabs */}
+          <div className="flex items-center gap-6 border-b border-slate-200 -mb-px">
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'users' 
+                  ? 'border-emerald-500 text-emerald-600' 
+                  : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}
             >
-              Xem chi tiết →
-            </Link>
-          )}
-        </div>
-
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-500">Doanh Thu</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalRevenue)}</p>
-            </div>
-            <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-green-600" />
-            </div>
+              Người dùng
+            </button>
+            <button
+              onClick={() => setActiveTab('feedback')}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'feedback' 
+                  ? 'border-emerald-500 text-emerald-600' 
+                  : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              Góp ý
+            </button>
+            <button
+              onClick={() => setActiveTab('notifications')}
+              className={`py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'notifications' 
+                  ? 'border-emerald-500 text-emerald-600' 
+                  : 'border-transparent text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              Gửi thông báo
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Recent Pending Payments */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Thanh toán chờ duyệt</h2>
-          <Link 
-            href="/admin/payments"
-            className="text-sm text-primary-600 hover:text-primary-700"
-          >
-            Xem tất cả
-          </Link>
-        </div>
-        
-        {loading ? (
-          <div className="p-6 text-center text-gray-500">Đang tải...</div>
-        ) : recentPayments.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p>Không có thanh toán chờ duyệt</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-100">
-            {recentPayments.map((payment) => (
-              <div key={payment.id} className="px-6 py-4 flex items-center justify-between hover:bg-gray-50">
-                <div className="flex items-center gap-4">
-                  {getStatusIcon(payment.status)}
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {formatCurrency(payment.amount)}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {payment.bankCode} • {payment.transferContent}
-                    </p>
-                  </div>
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Users Tab */}
+        {activeTab === 'users' && (
+          <div className="space-y-4">
+            {/* Filters */}
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm theo tên, email, SĐT..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  />
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    payment.status === 'pending' 
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : payment.status === 'verified'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}>
-                    {getStatusText(payment.status)}
-                  </span>
-                  <Link 
-                    href={`/admin/payments?id=${payment.id}`}
-                    className="text-sm text-primary-600 hover:text-primary-700"
-                  >
-                    Chi tiết
-                  </Link>
+                <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={showInvitedOnly}
+                    onChange={(e) => setShowInvitedOnly(e.target.checked)}
+                    className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500"
+                  />
+                  Hiển thị thành viên được mời
+                </label>
+                <div className="flex items-center gap-2">
+                  <button className="px-3 py-2 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Mọi trạng thái
+                  </button>
+                  <button className="px-3 py-2 text-sm text-slate-600 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-2">
+                    <Crown className="w-4 h-4" />
+                    Mọi gói cước
+                  </button>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Users Table */}
+            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Người dùng</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">SĐT</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Ngày hết hạn</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase">Trạng thái</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase">Hành động</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {USERS_DATA.map((u) => (
+                    <tr key={u.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-semibold">
+                            {u.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-medium text-slate-900">{u.name}</p>
+                            <p className="text-xs text-slate-500">{u.email}</p>
+                            <p className="text-xs text-slate-400">ĐK: {new Date().toLocaleDateString('vi-VN')}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-slate-600">{u.phone}</td>
+                      <td className="px-4 py-3 text-sm text-slate-600">{u.expiry}</td>
+                      <td className="px-4 py-3">{getStatusBadge(u.status)}</td>
+                      <td className="px-4 py-3 text-right">
+                        <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg">
+                          <MoreVertical className="w-5 h-5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
-      </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Link 
-          href="/admin/payments"
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-        >
-          <CreditCard className="w-8 h-8 text-primary-600 mb-3" />
-          <h3 className="font-semibold text-gray-900">Quản lý thanh toán</h3>
-          <p className="text-sm text-gray-500 mt-1">Duyệt/từ chối yêu cầu thanh toán</p>
-        </Link>
+        {/* Feedback Tab */}
+        {activeTab === 'feedback' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4">Quản lý Góp ý ({FEEDBACK_DATA.length})</h2>
+              <div className="space-y-3">
+                {FEEDBACK_DATA.map((item) => (
+                  <div key={item.id} className="flex items-start justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        {getStatusBadge(item.status)}
+                        <span className="text-sm font-medium text-slate-900">{item.title}</span>
+                      </div>
+                      <p className="text-sm text-slate-600 italic">"{item.content}"</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <select className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option>Đã xong</option>
+                        <option>Đang xử lý</option>
+                        <option>Chờ xem xét</option>
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-        <Link 
-          href="/admin/users"
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-        >
-          <Users className="w-8 h-8 text-blue-600 mb-3" />
-          <h3 className="font-semibold text-gray-900">Quản lý users</h3>
-          <p className="text-sm text-gray-500 mt-1">Xem và chỉnh sửa subscription</p>
-        </Link>
+        {/* Notifications Tab */}
+        {activeTab === 'notifications' && (
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white rounded-xl border border-slate-200 p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-6">Gửi thông báo cho thành viên</h2>
+              <form onSubmit={handleSendNotification} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Chọn mẫu thông báo</label>
+                  <select
+                    value={notificationTemplate}
+                    onChange={(e) => setNotificationTemplate(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+                  >
+                    {NOTIFICATION_TEMPLATES.map((template) => (
+                      <option key={template.value} value={template.value}>{template.label}</option>
+                    ))}
+                  </select>
+                </div>
 
-        <Link 
-          href="/admin/banks"
-          className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-        >
-          <AlertCircle className="w-8 h-8 text-green-600 mb-3" />
-          <h3 className="font-semibold text-gray-900">Tài khoản ngân hàng</h3>
-          <p className="text-sm text-gray-500 mt-1">Thêm/sửa TK nhận tiền</p>
-        </Link>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Gửi đến</label>
+                  <select
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
+                  >
+                    {RECIPIENT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Tiêu đề</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                    placeholder="Nhập tiêu đề thông báo"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Nội dung</label>
+                  <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    rows={6}
+                    className="w-full border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+                    placeholder="Nhập nội dung thông báo..."
+                  />
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    Gửi thông báo
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
