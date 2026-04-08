@@ -8,6 +8,12 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'ProDKT - Quản lý bán hàng & Báo cáo thuế',
   description: 'Phần mềm quản lý bán hàng, tồn kho, công nợ cho Hộ Kinh Doanh',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 }
 
 export default function RootLayout({

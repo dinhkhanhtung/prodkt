@@ -8,6 +8,8 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
+  setPersistence,
+  browserLocalPersistence,
   User as FirebaseUser 
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
@@ -35,6 +37,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Set persistence to localStorage so auth survives page reloads
+    setPersistence(auth, browserLocalPersistence).catch(console.error);
+    
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         // Get user data from Firestore
