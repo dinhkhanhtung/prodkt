@@ -61,12 +61,12 @@ export default function SettingsPage() {
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Cài đặt</h1>
-            <p className="text-slate-500 text-sm">{user?.email}</p>
+            <h1 className="text-2xl font-bold text-emerald-900">Cài đặt</h1>
+            <p className="text-emerald-600/70 text-sm">{user?.email}</p>
           </div>
         </div>
 
-        <div className="border-b border-slate-200">
+        <div className="border-b border-emerald-100">
           <nav className="flex gap-1 overflow-x-auto">
             {TABS.map((tab) => {
               const Icon = tab.icon;
@@ -77,7 +77,7 @@ export default function SettingsPage() {
                   className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                     activeTab === tab.id
                       ? 'border-emerald-500 text-emerald-600'
-                      : 'border-transparent text-slate-500 hover:text-slate-700'
+                      : 'border-transparent text-emerald-600/60 hover:text-emerald-700'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -92,31 +92,31 @@ export default function SettingsPage() {
       {/* Content */}
       <div className="max-w-3xl">
         {activeTab === 'profile' && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-emerald-100 p-6 shadow-sm">
             <div className="max-w-lg space-y-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Tên</label>
+                <label className="block text-sm font-medium text-emerald-700 mb-1.5">Tên</label>
                 <input
                   type="text"
                   value={profile.name}
                   onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-emerald-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-emerald-900"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Số điện thoại</label>
+                <label className="block text-sm font-medium text-emerald-700 mb-1.5">Số điện thoại</label>
                 <input
                   type="tel"
                   value={profile.phone}
                   onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-emerald-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-emerald-900"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+                <label className="block text-sm font-medium text-emerald-700 mb-1.5">Email</label>
                 <div className="relative">
                   <input type="email" value={profile.email} disabled
-                    className="w-full border border-slate-200 bg-slate-50 rounded-lg px-3 py-2.5 text-slate-500 cursor-not-allowed pr-10" />
+                    className="w-full border border-emerald-200 bg-emerald-50/30 rounded-lg px-3 py-2.5 text-emerald-600/70 cursor-not-allowed pr-10" />
                   <Shield className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
                 </div>
               </div>
@@ -135,14 +135,14 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'family' && (
-          <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-            <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500">Tính năng quản lý gia đình đang phát triển</p>
+          <div className="bg-white rounded-xl border border-emerald-100 p-12 text-center shadow-sm">
+            <Users className="w-12 h-12 text-emerald-300 mx-auto mb-4" />
+            <p className="text-emerald-600">Tính năng quản lý gia đình đang phát triển</p>
           </div>
         )}
 
         {activeTab === 'subscription' && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+          <div className="bg-white rounded-xl border border-emerald-100 p-6 space-y-6 shadow-sm">
             <div className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
               <div className="flex items-center justify-between">
                 <div>
@@ -153,9 +153,9 @@ export default function SettingsPage() {
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 border border-slate-200 rounded-xl">
-                <h4 className="font-medium text-slate-900 mb-3">Quyền lợi VIP</h4>
-                <ul className="space-y-2 text-sm text-slate-600">
+              <div className="p-4 border border-emerald-100 rounded-xl">
+                <h4 className="font-medium text-emerald-900 mb-3">Quyền lợi VIP</h4>
+                <ul className="space-y-2 text-sm text-emerald-700">
                   {['Không giới hạn sản phẩm', 'Multi-store (5 cửa hàng)', 'Báo cáo nâng cao', 'Hỗ trợ ưu tiên 24/7'].map((b, i) => (
                     <li key={i} className="flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-emerald-500" /> {b}
@@ -168,7 +168,7 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'notifications' && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-emerald-100 p-6 shadow-sm">
             <div className="max-w-lg space-y-3">
               {[
                 { key: 'email', label: 'Thông báo qua email', desc: 'Nhận thông báo về đơn hàng, thanh toán' },
@@ -176,13 +176,13 @@ export default function SettingsPage() {
                 { key: 'updates', label: 'Cập nhật sản phẩm', desc: 'Thông báo khi có tính năng mới' },
                 { key: 'marketing', label: 'Khuyến mãi & Ưu đãi', desc: 'Nhận thông tin khuyến mãi' },
               ].map((item) => (
-                <label key={item.key} className="flex items-start gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+                <label key={item.key} className="flex items-start gap-3 p-3 border border-emerald-100 rounded-lg cursor-pointer hover:bg-emerald-50/50">
                   <input type="checkbox" checked={notifications[item.key as keyof typeof notifications]}
                     onChange={(e) => setNotifications({ ...notifications, [item.key]: e.target.checked })}
-                    className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 mt-0.5" />
+                    className="w-4 h-4 text-emerald-600 rounded border-emerald-300 focus:ring-emerald-500 mt-0.5" />
                   <div>
-                    <p className="font-medium text-slate-900">{item.label}</p>
-                    <p className="text-sm text-slate-500">{item.desc}</p>
+                    <p className="font-medium text-emerald-900">{item.label}</p>
+                    <p className="text-sm text-emerald-600/70">{item.desc}</p>
                   </div>
                 </label>
               ))}
@@ -191,30 +191,30 @@ export default function SettingsPage() {
         )}
 
         {activeTab === 'appearance' && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white rounded-xl border border-emerald-100 p-6 shadow-sm">
             <div className="max-w-lg space-y-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Chế độ</label>
+                <label className="block text-sm font-medium text-emerald-700 mb-2">Chế độ</label>
                 <div className="grid grid-cols-3 gap-2">
                   {['light', 'dark', 'auto'].map((theme) => (
                     <button key={theme} onClick={() => setAppearance({ ...appearance, theme })}
                       className={`px-4 py-2.5 rounded-lg border text-sm font-medium ${
                         appearance.theme === theme
                           ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                          : 'border-slate-200 hover:bg-slate-50'
+                          : 'border-emerald-200 hover:bg-emerald-50/50 text-emerald-600'
                       }`}>
                       {theme === 'light' ? 'Sáng' : theme === 'dark' ? 'Tối' : 'Tự động'}
                     </button>
                   ))}
                 </div>
               </div>
-              <label className="flex items-center gap-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-slate-50">
+              <label className="flex items-center gap-3 p-3 border border-emerald-100 rounded-lg cursor-pointer hover:bg-emerald-50/50">
                 <input type="checkbox" checked={appearance.compact}
                   onChange={(e) => setAppearance({ ...appearance, compact: e.target.checked })}
-                  className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500" />
+                  className="w-4 h-4 text-emerald-600 rounded border-emerald-300 focus:ring-emerald-500" />
                 <div>
-                  <p className="font-medium text-slate-900">Chế độ gọn</p>
-                  <p className="text-sm text-slate-500">Giảm khoảng cách giữa các phần tử</p>
+                  <p className="font-medium text-emerald-900">Chế độ gọn</p>
+                  <p className="text-sm text-emerald-600/70">Giảm khoảng cách giữa các phần tử</p>
                 </div>
               </label>
             </div>

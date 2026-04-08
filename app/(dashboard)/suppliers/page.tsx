@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/components/AuthProvider';
@@ -141,7 +141,7 @@ export default function SuppliersPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Quản lý nhà cung cấp</h1>
+        <h1 className="text-2xl font-bold text-emerald-900">Quản lý nhà cung cấp</h1>
         <button onClick={openAddModal} className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Thêm nhà cung cấp
@@ -164,7 +164,7 @@ export default function SuppliersPage() {
       {filteredSuppliers.length === 0 ? (
         <div className="card text-center py-12">
           <TruckIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">Chưa có nhà cung cấp nào</p>
+          <p className="text-emerald-600/70">Chưa có nhà cung cấp nào</p>
           <button onClick={openAddModal} className="btn-primary mt-4">
             Thêm nhà cung cấp đầu tiên
           </button>
@@ -175,8 +175,8 @@ export default function SuppliersPage() {
             <div key={supplier.id} className="card p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{supplier.name}</h3>
-                  <div className="mt-2 space-y-1 text-sm text-gray-600">
+                  <h3 className="font-semibold text-emerald-900">{supplier.name}</h3>
+                  <div className="mt-2 space-y-1 text-sm text-emerald-700">
                     {supplier.phone && (
                       <p className="flex items-center gap-2">
                         <Phone className="w-4 h-4" />
@@ -190,7 +190,7 @@ export default function SuppliersPage() {
                         {supplier.address}
                       </p>
                     )}
-                    {supplier.note && <p className="text-gray-500">{supplier.note}</p>}
+                    {supplier.note && <p className="text-emerald-600/70">{supplier.note}</p>}
                   </div>
                   {supplier.debtAmount > 0 && (
                     <div className="mt-3 inline-flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">
@@ -202,7 +202,7 @@ export default function SuppliersPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(supplier)}
-                    className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                    className="p-2 text-emerald-700 hover:bg-emerald-50 rounded-lg"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -226,10 +226,10 @@ export default function SuppliersPage() {
             <div className="fixed inset-0 bg-gray-900/50" onClick={() => setIsModalOpen(false)} />
             <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-emerald-900">
                   {editingSupplier ? 'Sửa nhà cung cấp' : 'Thêm nhà cung cấp'}
                 </h2>
-                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-gray-600">
+                <button onClick={() => setIsModalOpen(false)} className="p-2 text-gray-400 hover:text-emerald-700">
                   <X className="w-5 h-5" />
                 </button>
               </div>

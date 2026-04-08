@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/components/AuthProvider';
@@ -75,7 +75,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-emerald-900">Dashboard</h1>
       </div>
 
       {/* Stats Grid */}
@@ -112,19 +112,19 @@ export default function DashboardPage() {
 
       {/* Recent Orders */}
       <div className="card">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Đơn hàng gần đây</h2>
+        <h2 className="text-lg font-semibold text-emerald-900 mb-4">Đơn hàng gần đây</h2>
         {recentOrders.length === 0 ? (
-          <p className="text-gray-500">Chưa có đơn hàng nào</p>
+          <p className="text-emerald-600/70">Chưa có đơn hàng nào</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-600">Mã đơn</th>
-                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-600">Khách hàng</th>
-                  <th className="text-right py-2 px-4 text-sm font-medium text-gray-600">Tổng tiền</th>
-                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-600">Thanh toán</th>
-                  <th className="text-left py-2 px-4 text-sm font-medium text-gray-600">Ngày</th>
+                <tr className="border-b border-emerald-100">
+                  <th className="text-left py-2 px-4 text-sm font-medium text-emerald-700">Mã đơn</th>
+                  <th className="text-left py-2 px-4 text-sm font-medium text-emerald-700">Khách hàng</th>
+                  <th className="text-right py-2 px-4 text-sm font-medium text-emerald-700">Tổng tiền</th>
+                  <th className="text-left py-2 px-4 text-sm font-medium text-emerald-700">Thanh toán</th>
+                  <th className="text-left py-2 px-4 text-sm font-medium text-emerald-700">Ngày</th>
                 </tr>
               </thead>
               <tbody>
@@ -150,7 +150,7 @@ export default function DashboardPage() {
                           : 'Công nợ'}
                       </span>
                     </td>
-                    <td className="py-2 px-4 text-sm text-gray-500">
+                    <td className="py-2 px-4 text-sm text-emerald-600/70">
                       {order.createdAt ? new Date(order.createdAt).toLocaleDateString('vi-VN') : '-'}
                     </td>
                   </tr>
@@ -188,9 +188,9 @@ function StatCard({
     <div className="card">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          <p className="text-xs text-gray-500 mt-1">{subtitle}</p>
+          <p className="text-sm text-emerald-700">{title}</p>
+          <p className="text-2xl font-bold text-emerald-900 mt-1">{value}</p>
+          <p className="text-xs text-emerald-600/70 mt-1">{subtitle}</p>
         </div>
         <div className={`p-2 rounded-lg ${colorClasses[color]}`}>{icon}</div>
       </div>

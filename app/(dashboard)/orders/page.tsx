@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/components/AuthProvider';
@@ -63,21 +63,21 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Quản lý hóa đơn</h1>
+        <h1 className="text-2xl font-bold text-emerald-900">Quản lý hóa đơn</h1>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="card">
-          <p className="text-sm text-gray-600">Tổng số đơn</p>
-          <p className="text-2xl font-bold text-gray-900">{filteredOrders.length}</p>
+          <p className="text-sm text-emerald-700">Tổng số đơn</p>
+          <p className="text-2xl font-bold text-emerald-900">{filteredOrders.length}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600">Tổng doanh thu</p>
+          <p className="text-sm text-emerald-700">Tổng doanh thu</p>
           <p className="text-2xl font-bold text-primary-600">{formatCurrency(totalRevenue)}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600">Tổng công nợ phát sinh</p>
+          <p className="text-sm text-emerald-700">Tổng công nợ phát sinh</p>
           <p className="text-2xl font-bold text-red-600">{formatCurrency(totalDebt)}</p>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function OrdersPage() {
             className="input"
           />
           {dateFilter && (
-            <button onClick={() => setDateFilter('')} className="p-2 text-gray-400 hover:text-gray-600">
+            <button onClick={() => setDateFilter('')} className="p-2 text-gray-400 hover:text-emerald-700">
               ✕
             </button>
           )}
@@ -114,7 +114,7 @@ export default function OrdersPage() {
       {filteredOrders.length === 0 ? (
         <div className="card text-center py-12">
           <Receipt className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">Chưa có hóa đơn nào</p>
+          <p className="text-emerald-600/70">Chưa có hóa đơn nào</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -123,7 +123,7 @@ export default function OrdersPage() {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-3">
-                    <span className="font-semibold text-gray-900">#{order.id.slice(-6)}</span>
+                    <span className="font-semibold text-emerald-900">#{order.id.slice(-6)}</span>
                     <span
                       className={`inline-flex px-2 py-1 text-xs rounded-full ${
                         order.paymentMethod === 'cash'
@@ -140,27 +140,27 @@ export default function OrdersPage() {
                         : 'Công nợ'}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+                  <p className="text-sm text-emerald-700 mt-1 flex items-center gap-1">
                     <User className="w-4 h-4" />
                     {order.customerName}
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-emerald-600/70 mt-1">
                     {order.createdAt ? new Date(order.createdAt).toLocaleString('vi-VN') : '-'}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-6">
                   <div className="text-right">
-                    <p className="text-xs text-gray-500">Tổng tiền</p>
-                    <p className="font-bold text-lg text-gray-900">{formatCurrency(order.finalAmount)}</p>
+                    <p className="text-xs text-emerald-600/70">Tổng tiền</p>
+                    <p className="font-bold text-lg text-emerald-900">{formatCurrency(order.finalAmount)}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-500">Đã thanh toán</p>
+                    <p className="text-xs text-emerald-600/70">Đã thanh toán</p>
                     <p className="font-medium text-green-600">{formatCurrency(order.paidAmount)}</p>
                   </div>
                   {order.debtAmount > 0 && (
                     <div className="text-right">
-                      <p className="text-xs text-gray-500">Còn nợ</p>
+                      <p className="text-xs text-emerald-600/70">Còn nợ</p>
                       <p className="font-medium text-red-600">{formatCurrency(order.debtAmount)}</p>
                     </div>
                   )}
@@ -168,21 +168,21 @@ export default function OrdersPage() {
               </div>
 
               {/* Order Items */}
-              <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="mt-4 pt-4 border-t border-emerald-100">
                 <p className="text-sm font-medium text-gray-700 mb-2">Chi tiết đơn hàng:</p>
                 <div className="space-y-1">
                   {order.items.map((item, idx) => (
                     <div key={idx} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
+                      <span className="text-emerald-700">
                         {item.name} x {item.quantity}
                       </span>
-                      <span className="text-gray-900">{formatCurrency(item.subtotal)}</span>
+                      <span className="text-emerald-900">{formatCurrency(item.subtotal)}</span>
                     </div>
                   ))}
                 </div>
                 {order.discount > 0 && (
                   <div className="flex justify-between text-sm mt-2 pt-2 border-t border-gray-100">
-                    <span className="text-gray-600">Giảm giá</span>
+                    <span className="text-emerald-700">Giảm giá</span>
                     <span className="text-red-600">-{formatCurrency(order.discount)}</span>
                   </div>
                 )}

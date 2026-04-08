@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/components/AuthProvider';
@@ -157,7 +157,7 @@ export default function ProductsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Quản lý sản phẩm</h1>
+        <h1 className="text-2xl font-bold text-emerald-900">Quản lý sản phẩm</h1>
         <button onClick={openAddModal} className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Thêm sản phẩm
@@ -166,7 +166,7 @@ export default function ProductsPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-400" />
         <input
           type="text"
           placeholder="Tìm kiếm sản phẩm..."
@@ -179,8 +179,8 @@ export default function ProductsPage() {
       {/* Products Grid */}
       {filteredProducts.length === 0 ? (
         <div className="card text-center py-12">
-          <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500">Chưa có sản phẩm nào</p>
+          <Package className="w-12 h-12 text-emerald-300 mx-auto mb-4" />
+          <p className="text-emerald-600/70">Chưa có sản phẩm nào</p>
           <button onClick={openAddModal} className="btn-primary mt-4">
             Thêm sản phẩm đầu tiên
           </button>
@@ -189,7 +189,7 @@ export default function ProductsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredProducts.map((product) => (
             <div key={product.id} className="card p-4">
-              <div className="aspect-square bg-gray-100 rounded-lg mb-4 overflow-hidden">
+              <div className="aspect-square bg-emerald-50 rounded-lg mb-4 overflow-hidden">
                 {product.imageURL ? (
                   <img
                     src={product.imageURL}
@@ -198,25 +198,25 @@ export default function ProductsPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <ImageIcon className="w-12 h-12 text-gray-300" />
+                    <ImageIcon className="w-12 h-12 text-emerald-300" />
                   </div>
                 )}
               </div>
-              <h3 className="font-semibold text-gray-900 truncate">{product.name}</h3>
-              <p className="text-sm text-gray-500 mt-1">Tồn kho: {product.stock}</p>
+              <h3 className="font-semibold text-emerald-900 truncate">{product.name}</h3>
+              <p className="text-sm text-emerald-600/70 mt-1">Tồn kho: {product.stock}</p>
               <div className="flex items-center justify-between mt-3">
                 <div>
                   <p className="text-lg font-bold text-primary-600">
                     {formatCurrency(product.price)}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-emerald-400">
                     Giá vốn: {formatCurrency(product.cost)}
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(product)}
-                    className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                    className="p-2 text-emerald-700 hover:bg-emerald-50 rounded-lg"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -243,12 +243,12 @@ export default function ProductsPage() {
             />
             <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-emerald-900">
                   {editingProduct ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}
                 </h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 text-gray-400 hover:text-gray-600"
+                  className="p-2 text-emerald-400 hover:text-emerald-700"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -277,7 +277,7 @@ export default function ProductsPage() {
                         </button>
                       </div>
                     ) : (
-                      <label className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary-500">
+                      <label className="flex items-center justify-center w-20 h-20 border-2 border-dashed border-emerald-200 rounded-lg cursor-pointer hover:border-primary-500">
                         <input
                           type="file"
                           accept="image/*"
@@ -288,11 +288,11 @@ export default function ProductsPage() {
                         {uploadingImage ? (
                           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-600" />
                         ) : (
-                          <Upload className="w-6 h-6 text-gray-400" />
+                          <Upload className="w-6 h-6 text-emerald-400" />
                         )}
                       </label>
                     )}
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-emerald-600/70">
                       Tải ảnh lên ImgBB
                       <br />
                       (Tối đa 32MB)

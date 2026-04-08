@@ -250,22 +250,22 @@ export default function POSPage() {
 
             {cart.length === 0 ? (
               <div className="p-4 text-center">
-                <p className="text-xs text-slate-400">Chưa có sản phẩm</p>
+                <p className="text-xs text-emerald-400/70">Chưa có sản phẩm</p>
               </div>
             ) : (
               <div className="max-h-32 overflow-y-auto">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-center gap-2 p-2 border-b border-slate-50 last:border-0">
+                  <div key={item.id} className="flex items-center gap-2 p-2 border-b border-emerald-50 last:border-0">
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-xs text-emerald-900 truncate">{item.name}</p>
                       <p className="text-[10px] text-emerald-600">{formatCurrency(item.price)}</p>
                     </div>
                     <div className="flex items-center gap-0.5">
-                      <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded">
+                      <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 flex items-center justify-center text-emerald-600 hover:bg-emerald-50 rounded">
                         <Minus className="w-3 h-3" />
                       </button>
                       <span className="w-6 text-center text-xs font-medium">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded">
+                      <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 flex items-center justify-center text-emerald-600 hover:bg-emerald-50 rounded">
                         <Plus className="w-3 h-3" />
                       </button>
                       <button onClick={() => removeFromCart(item.id)} className="w-6 h-6 flex items-center justify-center text-red-500 hover:bg-red-50 rounded ml-0.5">
@@ -391,52 +391,52 @@ export default function POSPage() {
       {/* Receipt Modal */}
       {showReceipt && lastOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setShowReceipt(false)} />
+          <div className="fixed inset-0 bg-emerald-950/50 backdrop-blur-sm" onClick={() => setShowReceipt(false)} />
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
             <div className="text-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3">
                 <CheckCircle className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-xl font-bold text-slate-900">HÓA ĐƠN</h2>
-              <p className="text-sm text-slate-500">#{lastOrder.id.slice(-6).toUpperCase()}</p>
+              <h2 className="text-xl font-bold text-emerald-900">HÓA ĐƠN</h2>
+              <p className="text-sm text-emerald-600/70">#{lastOrder.id.slice(-6).toUpperCase()}</p>
             </div>
 
-            <div className="space-y-1 text-sm text-slate-600 mb-4 bg-slate-50 p-3 rounded-xl">
+            <div className="space-y-1 text-sm text-emerald-700 mb-4 bg-emerald-50/50 p-3 rounded-xl">
               <p><span className="font-medium">Khách hàng:</span> {lastOrder.customerName}</p>
               <p><span className="font-medium">Ngày:</span> {new Date().toLocaleString('vi-VN')}</p>
             </div>
 
-            <div className="border-t border-b border-slate-100 py-3 mb-4 max-h-40 overflow-y-auto">
+            <div className="border-t border-b border-emerald-100 py-3 mb-4 max-h-40 overflow-y-auto">
               {lastOrder.items.map((item: any, idx: number) => (
                 <div key={idx} className="flex justify-between text-sm py-1.5">
-                  <span className="text-slate-700">
-                    {item.name} <span className="text-slate-400">x{item.quantity}</span>
+                  <span className="text-emerald-700">
+                    {item.name} <span className="text-emerald-400">x{item.quantity}</span>
                   </span>
-                  <span className="font-medium text-slate-900">{formatCurrency(item.subtotal)}</span>
+                  <span className="font-medium text-emerald-900">{formatCurrency(item.subtotal)}</span>
                 </div>
               ))}
             </div>
 
             <div className="space-y-1 text-sm mb-6">
-              <div className="flex justify-between text-slate-600">
+              <div className="flex justify-between text-emerald-700">
                 <span>Tạm tính:</span>
                 <span>{formatCurrency(lastOrder.totalAmount)}</span>
               </div>
               {lastOrder.discount > 0 && (
-                <div className="flex justify-between text-red-500">
+                <div className="flex justify-between text-emerald-900">
                   <span>Giảm giá:</span>
                   <span>-{formatCurrency(lastOrder.discount)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-lg font-bold pt-2 border-t border-slate-100">
-                <span className="text-slate-900">Tổng cộng:</span>
-                <span className="text-violet-600">{formatCurrency(lastOrder.finalAmount)}</span>
+              <div className="flex justify-between text-lg font-bold pt-2 border-t border-emerald-100">
+                <span className="text-emerald-900">Tổng cộng:</span>
+                <span className="text-emerald-600">{formatCurrency(lastOrder.finalAmount)}</span>
               </div>
             </div>
 
             <button
               onClick={() => setShowReceipt(false)}
-              className="w-full py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity"
+              className="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-xl font-medium hover:opacity-90 transition-opacity"
             >
               Đóng
             </button>
