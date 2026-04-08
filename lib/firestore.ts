@@ -548,6 +548,78 @@ export async function addExpense(userId: string, storeId: string, data: Omit<Exp
   return docRef.id;
 }
 
+// ==================== CUSTOM FIELDS ====================
+
+export interface CustomField {
+  id?: string;
+  userId: string;
+  storeId: string;
+  entityType: 'product' | 'customer' | 'supplier';
+  name: string;
+  label: string;
+  type: 'text' | 'number' | 'date' | 'select' | 'checkbox';
+  options?: string[]; // For select type
+  required: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const CUSTOM_FIELDS_COLLECTION = 'customFields';
+
+function getCustomFieldsCollection(storeId: string) {
+  return collection(db, 'stores', storeId, CUSTOM_FIELDS_COLLECTION);
+}
+
+export async function getCustomFields(storeId: string, entityType?: 'product' | 'customer' | 'supplier'): Promise<WithId<CustomField>[]> {
+  const fieldsCol = getCustomFieldsCollection(storeId);
+  let q = query(fieldsCol, orderBy('order', 'asc'));
+  
+  if (entityType) {
+    q = query(q, where('entityType', '==', entityType));
+  }
+  
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<CustomField>));
+}
+
+export async function addCustomField(userId: string, storeId: string, data: Omit<CustomField, 'id' | 'userId' | 'storeId' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const fieldData: CustomField = {
+    ...data,
+    userId,
+    storeId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  
+  const docRef = await addDoc(getCustomFieldsCollection(storeId), fieldData);
+  return docRef.id;
+}
+
+export async function updateCustomField(storeId: string, fieldId: string, data: Partial<Omit<CustomField, 'id' | 'userId' | 'storeId' | 'createdAt'>>): Promise<void> {
+  const fieldRef = doc(db, 'stores', storeId, CUSTOM_FIELDS_COLLECTION, fieldId);
+  await updateDoc(fieldRef, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deleteCustomField(storeId: string, fieldId: string): Promise<void> {
+  const fieldRef = doc(db, 'stores', storeId, CUSTOM_FIELDS_COLLECTION, fieldId);
+  await deleteDoc(fieldRef);
+}
+
+// Store custom field values on entities
+export function applyCustomFields<T extends Record<string, any>>(
+  entity: T,
+  customFields: Record<string, any>
+): T & { customFields: Record<string, any> } {
+  return {
+    ...entity,
+    customFields: customFields || {},
+  };
+}
+
 export async function updateExpense(storeId: string, expenseId: string, data: Partial<Omit<Expense, 'id' | 'userId' | 'storeId' | 'createdAt'>>): Promise<void> {
   const expenseRef = doc(db, 'stores', storeId, EXPENSES_COLLECTION, expenseId);
   await updateDoc(expenseRef, {
@@ -571,3 +643,76 @@ export const EXPENSE_CATEGORIES = {
   maintenance: 'Sửa chữa bảo trì',
   other: 'Chi phí khác',
 } as const;
+
+// ==================== NOTIFICATIONS ====================
+
+export interface Notification {
+  id?: string;
+  userId: string;
+  storeId: string;
+  type: 'order' | 'expense' | 'inventory' | 'system' | 'admin';
+  title: string;
+  message: string;
+  read: boolean;
+  link?: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+}
+
+const NOTIFICATIONS_COLLECTION = 'notifications';
+
+function getNotificationsCollection(userId: string) {
+  return collection(db, 'users', userId, NOTIFICATIONS_COLLECTION);
+}
+
+export async function getNotifications(userId: string, unreadOnly = false): Promise<WithId<Notification>[]> {
+  const notifCol = getNotificationsCollection(userId);
+  let q = query(notifCol, orderBy('createdAt', 'desc'), limit(50));
+  
+  if (unreadOnly) {
+    q = query(notifCol, where('read', '==', false), orderBy('createdAt', 'desc'));
+  }
+  
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<Notification>));
+}
+
+export async function getUnreadCount(userId: string): Promise<number> {
+  const notifCol = getNotificationsCollection(userId);
+  const q = query(notifCol, where('read', '==', false));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.size;
+}
+
+export async function addNotification(userId: string, storeId: string, data: Omit<Notification, 'id' | 'userId' | 'createdAt'>): Promise<string> {
+  const notifData: Notification = {
+    ...data,
+    userId,
+    createdAt: new Date().toISOString(),
+  };
+  
+  const docRef = await addDoc(getNotificationsCollection(userId), notifData);
+  return docRef.id;
+}
+
+export async function markNotificationAsRead(userId: string, notificationId: string): Promise<void> {
+  const notifRef = doc(db, 'users', userId, NOTIFICATIONS_COLLECTION, notificationId);
+  await updateDoc(notifRef, { read: true });
+}
+
+export async function markAllAsRead(userId: string): Promise<void> {
+  const notifCol = getNotificationsCollection(userId);
+  const q = query(notifCol, where('read', '==', false));
+  const querySnapshot = await getDocs(q);
+  
+  const batch = querySnapshot.docs.map(docSnapshot => 
+    updateDoc(doc(db, 'users', userId, NOTIFICATIONS_COLLECTION, docSnapshot.id), { read: true })
+  );
+  
+  await Promise.all(batch);
+}
+
+export async function deleteNotification(userId: string, notificationId: string): Promise<void> {
+  const notifRef = doc(db, 'users', userId, NOTIFICATIONS_COLLECTION, notificationId);
+  await deleteDoc(notifRef);
+}

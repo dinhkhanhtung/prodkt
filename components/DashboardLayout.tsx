@@ -3,26 +3,30 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@/components/AuthProvider';
-import {
-  LayoutDashboard,
-  Package,
-  Users,
-  Truck,
-  ShoppingCart,
-  Receipt,
-  LogOut,
-  Menu,
-  X,
-  Shield,
-  Settings,
-  RefreshCw,
+import { useAuth } from './AuthProvider';
+import { getNotifications, getUnreadCount, markNotificationAsRead, markAllAsRead, deleteNotification, Notification } from '@/lib/firestore';
+import { 
+  LayoutDashboard, 
+  Package, 
+  Users, 
+  Truck, 
+  ShoppingCart, 
+  Receipt, 
+  LogOut, 
+  Menu, 
+  X, 
+  Shield, 
+  Settings, 
+  RefreshCw, 
   Moon,
-  Bell,
-  Plus,
-  ChevronDown,
-  Wallet,
-  BarChart3,
+  Check,
+  Trash2, 
+  Bell, 
+  Plus, 
+  ChevronDown, 
+  Wallet, 
+  BarChart3, 
+  Settings2 
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -42,6 +46,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -61,6 +68,60 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     return null;
   }
 
+  // Load notifications
+  useEffect(() => {
+    if (user?.uid) {
+      loadNotifications();
+      // Poll for new notifications every 30 seconds
+      const interval = setInterval(loadNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [user?.uid]);
+
+  const loadNotifications = async () => {
+    if (!user?.uid) return;
+    try {
+      const [notifs, count] = await Promise.all([
+        getNotifications(user.uid, false),
+        getUnreadCount(user.uid),
+      ]);
+      setNotifications(notifs);
+      setUnreadCount(count);
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+    }
+  };
+
+  const handleMarkAsRead = async (id: string) => {
+    if (!user?.uid) return;
+    try {
+      await markNotificationAsRead(user.uid, id);
+      loadNotifications();
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (!user?.uid) return;
+    try {
+      await markAllAsRead(user.uid);
+      loadNotifications();
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  };
+
+  const handleDeleteNotification = async (id: string) => {
+    if (!user?.uid) return;
+    try {
+      await deleteNotification(user.uid, id);
+      loadNotifications();
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
     router.push('/');
@@ -77,6 +138,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Hóa đơn', href: '/orders', icon: Receipt },
     { name: 'Chi phí', href: '/expenses', icon: Wallet },
     { name: 'Báo cáo', href: '/reports', icon: BarChart3 },
+    { name: 'Trường tùy chỉnh', href: '/custom-fields', icon: Settings2 },
     { name: 'Cài đặt', href: '/settings', icon: Settings },
     ...(isAdmin ? [{ name: 'Quản trị', href: '/admin', icon: Shield }] : []),
   ];
@@ -140,13 +202,77 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </button>
               
               {/* Notifications */}
-              <button 
-                className="p-2 rounded-full text-emerald-600 hover:bg-emerald-50 transition-colors relative"
-                title="Thông báo"
-              >
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full"></span>
-              </button>
+              <div className="relative">
+                <button 
+                  onClick={() => setNotifOpen(!notifOpen)}
+                  className="p-2 rounded-full text-emerald-600 hover:bg-emerald-50 transition-colors relative"
+                  title="Thông báo"
+                >
+                  <Bell className="w-5 h-5" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1 right-1 w-4 h-4 bg-orange-500 rounded-full text-[10px] text-white flex items-center justify-center font-semibold">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {notifOpen && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-emerald-100 py-2 z-50 max-h-96 overflow-y-auto">
+                    <div className="flex items-center justify-between px-4 py-2 border-b border-emerald-50">
+                      <p className="font-semibold text-emerald-900">Thông báo</p>
+                      {unreadCount > 0 && (
+                        <button 
+                          onClick={handleMarkAllAsRead}
+                          className="text-xs text-emerald-600 hover:text-emerald-700"
+                        >
+                          Đọc tất cả
+                        </button>
+                      )}
+                    </div>
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center">
+                        <p className="text-sm text-emerald-600">Không có thông báo</p>
+                      </div>
+                    ) : (
+                      notifications.slice(0, 10).map((notif) => (
+                        <div 
+                          key={notif.id} 
+                          className={`px-4 py-3 border-b border-emerald-50 hover:bg-emerald-50/50 ${!notif.read ? 'bg-emerald-50/30' : ''}`}
+                        >
+                          <div className="flex items-start gap-2">
+                            <div className={`w-2 h-2 rounded-full mt-2 ${!notif.read ? 'bg-emerald-500' : 'bg-emerald-200'}`} />
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-emerald-900">{notif.title}</p>
+                              <p className="text-xs text-emerald-600/70 truncate">{notif.message}</p>
+                              <p className="text-[10px] text-emerald-400 mt-1">
+                                {new Date(notif.createdAt).toLocaleString('vi-VN')}
+                              </p>
+                            </div>
+                            <div className="flex gap-1">
+                              {!notif.read && (
+                                <button 
+                                  onClick={() => handleMarkAsRead(notif.id)}
+                                  className="p-1 text-emerald-600 hover:bg-emerald-100 rounded"
+                                  title="Đánh dấu đã đọc"
+                                >
+                                  <Check className="w-3 h-3" />
+                                </button>
+                              )}
+                              <button 
+                                onClick={() => handleDeleteNotification(notif.id)}
+                                className="p-1 text-red-600 hover:bg-red-50 rounded"
+                                title="Xóa"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
 
               {/* User dropdown */}
               <div className="relative ml-2">
