@@ -30,7 +30,9 @@ import {
   MessageCircle,
   Sparkles,
   Repeat,
-  HandCoins
+  HandCoins,
+  Trophy,
+  Store
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -144,6 +146,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Báo cáo', href: '/reports', icon: BarChart3 },
     { name: 'AI Phân tích', href: '/ai-analysis', icon: Sparkles },
     { name: 'Chat', href: '/chat', icon: MessageCircle },
+    { name: 'Hall of Fame', href: '/partners/hall-of-fame', icon: Trophy },
+    { name: 'Cộng đồng', href: '/community', icon: Users },
+    { name: 'B2B Marketplace', href: '/marketplace', icon: Store },
     { name: 'Tài chính cá nhân', href: '/personal-finance', icon: Wallet },
     { name: 'Quản lý nợ', href: '/debts', icon: HandCoins },
     { name: 'Giao dịch định kỳ', href: '/recurring', icon: Repeat },

@@ -1242,3 +1242,289 @@ export const PERSONAL_CATEGORIES: Record<string, Record<string, string>> = {
     other_expense: 'Chi tiêu khác',
   },
 };
+
+// ==================== COMMUNITY & B2B (from Kimke) ====================
+
+export interface CommunityPost {
+  id?: string;
+  authorId: string;
+  authorName: string;
+  authorStoreName: string;
+  type: 'looking_for' | 'selling' | 'experience' | 'question';
+  title: string;
+  content: string;
+  category: string;
+  images?: string[];
+  likes: number;
+  comments: number;
+  views: number;
+  likedBy: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CommunityComment {
+  id?: string;
+  postId: string;
+  authorId: string;
+  authorName: string;
+  content: string;
+  createdAt: string;
+}
+
+export interface B2BProduct {
+  id?: string;
+  sellerId: string;
+  sellerStoreName: string;
+  name: string;
+  description: string;
+  wholesalePrice: number; // Giá sỉ
+  retailPrice: number; // Giá bán lẻ tham khảo
+  minOrderQuantity: number; // Số lượng tối thiểu
+  stock: number;
+  images: string[];
+  category: string;
+  moq: number; // Minimum Order Quantity
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface B2BOrder {
+  id?: string;
+  buyerId: string;
+  buyerStoreName: string;
+  sellerId: string;
+  sellerStoreName: string;
+  items: B2BOrderItem[];
+  totalAmount: number;
+  status: 'pending' | 'confirmed' | 'paid' | 'shipped' | 'completed' | 'cancelled';
+  shippingAddress: string;
+  shippingFee: number;
+  note: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface B2BOrderItem {
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+}
+
+const COMMUNITY_POSTS_COLLECTION = 'communityPosts';
+const COMMUNITY_COMMENTS_COLLECTION = 'comments';
+const B2B_PRODUCTS_COLLECTION = 'b2bProducts';
+const B2B_ORDERS_COLLECTION = 'b2bOrders';
+
+// Community APIs
+export async function getCommunityPosts(
+  type?: string,
+  category?: string,
+  limit = 20
+): Promise<WithId<CommunityPost>[]> {
+  const col = collection(db, COMMUNITY_POSTS_COLLECTION);
+  let q = query(col, orderBy('createdAt', 'desc'), limitToLast(limit));
+  
+  if (type) {
+    q = query(q, where('type', '==', type));
+  }
+  if (category) {
+    q = query(q, where('category', '==', category));
+  }
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<CommunityPost>));
+}
+
+export async function addCommunityPost(
+  authorId: string,
+  authorName: string,
+  authorStoreName: string,
+  data: Omit<CommunityPost, 'id' | 'authorId' | 'authorName' | 'authorStoreName' | 'likes' | 'comments' | 'views' | 'likedBy' | 'createdAt' | 'updatedAt'>
+): Promise<string> {
+  const col = collection(db, COMMUNITY_POSTS_COLLECTION);
+  const docRef = await addDoc(col, {
+    ...data,
+    authorId,
+    authorName,
+    authorStoreName,
+    likes: 0,
+    comments: 0,
+    views: 0,
+    likedBy: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function likeCommunityPost(postId: string, userId: string): Promise<void> {
+  const ref = doc(db, COMMUNITY_POSTS_COLLECTION, postId);
+  const postDoc = await getDoc(ref);
+  if (!postDoc.exists()) throw new Error('Post not found');
+  
+  const post = postDoc.data() as CommunityPost;
+  const likedBy = post.likedBy || [];
+  
+  if (likedBy.includes(userId)) {
+    // Unlike
+    await updateDoc(ref, {
+      likes: Math.max(0, post.likes - 1),
+      likedBy: likedBy.filter(id => id !== userId),
+    });
+  } else {
+    // Like
+    await updateDoc(ref, {
+      likes: post.likes + 1,
+      likedBy: [...likedBy, userId],
+    });
+  }
+}
+
+export async function addComment(
+  postId: string,
+  authorId: string,
+  authorName: string,
+  content: string
+): Promise<void> {
+  const col = collection(db, COMMUNITY_POSTS_COLLECTION, postId, COMMUNITY_COMMENTS_COLLECTION);
+  await addDoc(col, {
+    postId,
+    authorId,
+    authorName,
+    content,
+    createdAt: new Date().toISOString(),
+  });
+  
+  // Update comment count
+  const postRef = doc(db, COMMUNITY_POSTS_COLLECTION, postId);
+  const postDoc = await getDoc(postRef);
+  if (postDoc.exists()) {
+    const post = postDoc.data() as CommunityPost;
+    await updateDoc(postRef, { comments: post.comments + 1 });
+  }
+}
+
+export async function getComments(postId: string): Promise<WithId<CommunityComment>[]> {
+  const col = collection(db, COMMUNITY_POSTS_COLLECTION, postId, COMMUNITY_COMMENTS_COLLECTION);
+  const q = query(col, orderBy('createdAt', 'asc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<CommunityComment>));
+}
+
+// B2B Marketplace APIs
+export async function getB2BProducts(
+  sellerId?: string,
+  category?: string
+): Promise<WithId<B2BProduct>[]> {
+  const col = collection(db, B2B_PRODUCTS_COLLECTION);
+  let q = query(col, where('active', '==', true), orderBy('createdAt', 'desc'));
+  
+  if (sellerId) {
+    q = query(q, where('sellerId', '==', sellerId));
+  }
+  if (category) {
+    q = query(q, where('category', '==', category));
+  }
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<B2BProduct>));
+}
+
+export async function addB2BProduct(
+  sellerId: string,
+  sellerStoreName: string,
+  data: Omit<B2BProduct, 'id' | 'sellerId' | 'sellerStoreName' | 'active' | 'createdAt' | 'updatedAt'>
+): Promise<string> {
+  const col = collection(db, B2B_PRODUCTS_COLLECTION);
+  const docRef = await addDoc(col, {
+    ...data,
+    sellerId,
+    sellerStoreName,
+    active: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function updateB2BProduct(
+  productId: string,
+  data: Partial<B2BProduct>
+): Promise<void> {
+  const ref = doc(db, B2B_PRODUCTS_COLLECTION, productId);
+  await updateDoc(ref, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deleteB2BProduct(productId: string): Promise<void> {
+  await deleteDoc(doc(db, B2B_PRODUCTS_COLLECTION, productId));
+}
+
+// B2B Order APIs
+export async function getB2BOrders(userId: string, as: 'buyer' | 'seller'): Promise<WithId<B2BOrder>[]> {
+  const col = collection(db, B2B_ORDERS_COLLECTION);
+  const field = as === 'buyer' ? 'buyerId' : 'sellerId';
+  const q = query(col, where(field, '==', userId), orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<B2BOrder>));
+}
+
+export async function createB2BOrder(
+  buyerId: string,
+  buyerStoreName: string,
+  sellerId: string,
+  sellerStoreName: string,
+  items: B2BOrderItem[],
+  shippingAddress: string,
+  note: string
+): Promise<string> {
+  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  
+  const col = collection(db, B2B_ORDERS_COLLECTION);
+  const docRef = await addDoc(col, {
+    buyerId,
+    buyerStoreName,
+    sellerId,
+    sellerStoreName,
+    items,
+    totalAmount,
+    status: 'pending',
+    shippingAddress,
+    shippingFee: 0,
+    note,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function updateB2BOrderStatus(
+  orderId: string,
+  status: B2BOrder['status']
+): Promise<void> {
+  const ref = doc(db, B2B_ORDERS_COLLECTION, orderId);
+  await updateDoc(ref, {
+    status,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+// Hall of Fame - Get top rated partners
+export async function getHallOfFame(limit = 10): Promise<PartnerProfile[]> {
+  const col = collection(db, PARTNER_PROFILES_COLLECTION);
+  const q = query(
+    col,
+    where('totalReviews', '>=', 5),
+    orderBy('averageRating', 'desc'),
+    orderBy('totalReviews', 'desc'),
+    limitToLast(limit)
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ userId: doc.id, ...doc.data() } as PartnerProfile));
+}
