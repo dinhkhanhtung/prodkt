@@ -22,6 +22,7 @@ import {
   Plus,
   ChevronDown,
   Wallet,
+  BarChart3,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -75,6 +76,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Bán hàng POS', href: '/pos', icon: ShoppingCart, highlight: true },
     { name: 'Hóa đơn', href: '/orders', icon: Receipt },
     { name: 'Chi phí', href: '/expenses', icon: Wallet },
+    { name: 'Báo cáo', href: '/reports', icon: BarChart3 },
     { name: 'Cài đặt', href: '/settings', icon: Settings },
     ...(isAdmin ? [{ name: 'Quản trị', href: '/admin', icon: Shield }] : []),
   ];
