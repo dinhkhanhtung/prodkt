@@ -161,46 +161,42 @@ export default function POSPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 -m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8">
+    <div className="h-[calc(100vh-4rem)] bg-slate-50 -m-4 sm:-m-6 lg:-m-8 p-3 sm:p-4 lg:p-5 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Bán hàng POS</h1>
-          <p className="text-slate-500 mt-1">Tạo đơn hàng nhanh chóng</p>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-slate-500">
-          <ShoppingCart className="w-4 h-4" />
-          <span>{cart.length} sản phẩm</span>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <h1 className="text-lg font-bold text-slate-900">Bán hàng POS</h1>
+          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{cart.length} SP</span>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-3 h-[calc(100%-2rem)]">
         {/* Products Section */}
         <div className="lg:col-span-2 space-y-4">
           {/* Search */}
-          <div className="bg-white rounded-xl border border-slate-200 p-1">
+          <div className="bg-white rounded-lg border border-slate-200">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Tìm sản phẩm theo tên..."
+                placeholder="Tìm sản phẩm..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-slate-900 placeholder-slate-400"
+                className="w-full pl-9 pr-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm text-slate-900 placeholder-slate-400"
               />
             </div>
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 overflow-y-auto max-h-[calc(100%-3rem)]">
             {filteredProducts.map((product) => (
               <button
                 key={product.id}
                 onClick={() => addToCart(product)}
                 disabled={product.stock <= 0}
-                className={`group bg-white rounded-xl border border-slate-200 p-3 text-left transition-all ${
+                className={`group bg-white rounded-lg border border-slate-200 p-2 text-left transition-all ${
                   product.stock > 0
-                    ? 'hover:shadow-lg hover:border-violet-300 hover:scale-[1.02]'
+                    ? 'hover:shadow-md hover:border-violet-300'
                     : 'opacity-50 cursor-not-allowed'
                 }`}
               >
@@ -208,17 +204,17 @@ export default function POSPage() {
                   <img
                     src={product.imageURL}
                     alt={product.name}
-                    className="w-full h-28 object-cover rounded-lg mb-3"
+                    className="w-full h-16 object-cover rounded-md mb-2"
                   />
                 ) : (
-                  <div className="w-full h-28 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg mb-3 flex items-center justify-center">
-                    <Package className="w-10 h-10 text-slate-400" />
+                  <div className="w-full h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-md mb-2 flex items-center justify-center">
+                    <Package className="w-6 h-6 text-slate-400" />
                   </div>
                 )}
-                <h3 className="font-medium text-slate-900 text-sm truncate mb-1">{product.name}</h3>
-                <div className="flex items-center justify-between">
-                  <p className="text-violet-600 font-bold">{formatCurrency(product.price)}</p>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                <h3 className="font-medium text-slate-900 text-xs truncate">{product.name}</h3>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-violet-600 font-bold text-xs">{formatCurrency(product.price)}</p>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     product.stock > 10 
                       ? 'bg-emerald-100 text-emerald-700' 
                       : product.stock > 0 
@@ -234,64 +230,46 @@ export default function POSPage() {
         </div>
 
         {/* Cart Section */}
-        <div className="space-y-4">
+        <div className="space-y-2 overflow-y-auto max-h-full">
           {/* Cart Items */}
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="font-semibold text-slate-900 flex items-center gap-2">
-                <ShoppingCart className="w-5 h-5 text-violet-600" />
-                Giỏ hàng ({cart.length})
+          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
+              <h2 className="font-semibold text-sm text-slate-900 flex items-center gap-1.5">
+                <ShoppingCart className="w-4 h-4 text-violet-600" />
+                Giỏ ({cart.length})
               </h2>
               {cart.length > 0 && (
                 <button 
                   onClick={clearCart}
-                  className="text-xs text-red-500 hover:text-red-600 hover:bg-red-50 px-2 py-1 rounded"
+                  className="text-[10px] text-red-500 hover:text-red-600 px-1.5 py-0.5 rounded"
                 >
-                  Xóa tất cả
+                  Xóa
                 </button>
               )}
             </div>
 
             {cart.length === 0 ? (
-              <div className="p-8 text-center">
-                <ShoppingCart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                <p className="text-slate-500">Chưa có sản phẩm</p>
-                <p className="text-xs text-slate-400 mt-1">Click sản phẩm bên trái để thêm</p>
+              <div className="p-4 text-center">
+                <p className="text-xs text-slate-400">Chưa có sản phẩm</p>
               </div>
             ) : (
-              <div className="max-h-48 overflow-y-auto">
+              <div className="max-h-32 overflow-y-auto">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 p-3 border-b border-slate-50 last:border-0">
-                    {item.imageURL ? (
-                      <img src={item.imageURL} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
-                    ) : (
-                      <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center">
-                        <Package className="w-5 h-5 text-slate-400" />
-                      </div>
-                    )}
+                  <div key={item.id} className="flex items-center gap-2 p-2 border-b border-slate-50 last:border-0">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-slate-900 truncate">{item.name}</p>
-                      <p className="text-xs text-violet-600 font-semibold">{formatCurrency(item.price)}</p>
+                      <p className="font-medium text-xs text-slate-900 truncate">{item.name}</p>
+                      <p className="text-[10px] text-violet-600">{formatCurrency(item.price)}</p>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => updateQuantity(item.id, -1)}
-                        className="w-7 h-7 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                      >
-                        <Minus className="w-4 h-4" />
+                    <div className="flex items-center gap-0.5">
+                      <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded">
+                        <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.id, 1)}
-                        className="w-7 h-7 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-                      >
-                        <Plus className="w-4 h-4" />
+                      <span className="w-6 text-center text-xs font-medium">{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded">
+                        <Plus className="w-3 h-3" />
                       </button>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="w-7 h-7 flex items-center justify-center text-red-500 hover:bg-red-50 rounded-lg transition-colors ml-1"
-                      >
-                        <Trash2 className="w-4 h-4" />
+                      <button onClick={() => removeFromCart(item.id)} className="w-6 h-6 flex items-center justify-center text-red-500 hover:bg-red-50 rounded ml-0.5">
+                        <Trash2 className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
@@ -301,147 +279,109 @@ export default function POSPage() {
           </div>
 
           {/* Customer Info */}
-          <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
-            <h3 className="font-medium text-slate-900 flex items-center gap-2">
-              <User className="w-4 h-4 text-slate-500" />
-              Thông tin khách hàng
-            </h3>
+          <div className="bg-white rounded-lg border border-slate-200 p-2 space-y-2">
             <input
               type="text"
-              placeholder="Tên khách hàng"
+              placeholder="Tên KH"
               value={customer.name}
               onChange={(e) => setCustomer((prev) => ({ ...prev, name: e.target.value }))}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+              className="w-full border border-slate-200 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
             <input
               type="tel"
-              placeholder="Số điện thoại"
+              placeholder="SĐT"
               value={customer.phone}
               onChange={(e) => setCustomer((prev) => ({ ...prev, phone: e.target.value }))}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent"
+              className="w-full border border-slate-200 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500"
             />
           </div>
 
           {/* Payment Summary */}
-          <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-4">
-            {/* Amounts */}
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-slate-500">Tạm tính:</span>
-                <span className="font-medium text-slate-900">{formatCurrency(subtotal)}</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-500">Giảm giá:</span>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    max={subtotal}
-                    value={discount}
-                    onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                    className="w-24 border border-slate-200 rounded-lg px-2 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-violet-500"
-                  />
-                  <span className="text-slate-500">đ</span>
-                </div>
-              </div>
-              
-              <div className="flex justify-between text-lg font-bold pt-2 border-t border-slate-100">
-                <span className="text-slate-900">Tổng cộng:</span>
-                <span className="text-violet-600">{formatCurrency(finalAmount)}</span>
-              </div>
+          <div className="bg-white rounded-lg border border-slate-200 p-3 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500">Tạm tính:</span>
+              <span className="font-medium">{formatCurrency(subtotal)}</span>
+            </div>
+            
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-slate-500">Giảm:</span>
+              <input
+                type="number"
+                min="0"
+                max={subtotal}
+                value={discount}
+                onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
+                className="w-20 border border-slate-200 rounded px-2 py-1 text-xs text-right"
+              />
+            </div>
+            
+            <div className="flex justify-between font-bold text-base border-t border-slate-100 pt-1">
+              <span>Tổng:</span>
+              <span className="text-violet-600">{formatCurrency(finalAmount)}</span>
             </div>
 
             {/* Payment Method */}
-            <div className="space-y-2">
-              <label className="text-sm text-slate-500">Phương thức thanh toán:</label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { key: 'cash', label: 'Tiền mặt', icon: Banknote },
-                  { key: 'transfer', label: 'Chuyển khoản', icon: CreditCard },
-                  { key: 'debt', label: 'Công nợ', icon: Receipt },
-                ].map((method) => {
-                  const Icon = method.icon;
-                  return (
-                    <button
-                      key={method.key}
-                      onClick={() => setPaymentMethod(method.key as any)}
-                      className={`flex flex-col items-center gap-1 py-2 px-2 text-xs rounded-lg border transition-colors ${
-                        paymentMethod === method.key
-                          ? 'bg-violet-50 border-violet-500 text-violet-700'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      {method.label}
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="grid grid-cols-3 gap-1 pt-1">
+              {[
+                { key: 'cash', label: 'Tiền mặt' },
+                { key: 'transfer', label: 'CK' },
+                { key: 'debt', label: 'Nợ' },
+              ].map((method) => (
+                <button
+                  key={method.key}
+                  onClick={() => setPaymentMethod(method.key as any)}
+                  className={`py-1.5 px-1 text-[10px] rounded border ${
+                    paymentMethod === method.key
+                      ? 'bg-violet-50 border-violet-500 text-violet-700'
+                      : 'border-slate-200 text-slate-600'
+                  }`}
+                >
+                  {method.label}
+                </button>
+              ))}
             </div>
 
-            {/* Paid Amount */}
             {paymentMethod !== 'debt' && (
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-500">Khách trả:</span>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min="0"
-                    value={paidAmount}
-                    onChange={(e) => setPaidAmount(parseFloat(e.target.value) || 0)}
-                    className="w-24 border border-slate-200 rounded-lg px-2 py-1.5 text-sm text-right focus:outline-none focus:ring-2 focus:ring-violet-500"
-                  />
-                  <span className="text-slate-500">đ</span>
-                </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-500">Khách trả:</span>
+                <input
+                  type="number"
+                  min="0"
+                  value={paidAmount}
+                  onChange={(e) => setPaidAmount(parseFloat(e.target.value) || 0)}
+                  className="w-20 border border-slate-200 rounded px-2 py-1 text-xs text-right"
+                />
               </div>
             )}
 
-            {/* Debt/Change */}
             {debtAmount > 0 && (
-              <div className="flex justify-between text-sm bg-red-50 p-2 rounded-lg">
+              <div className="flex justify-between text-xs bg-red-50 p-1.5 rounded">
                 <span className="text-red-600">Còn nợ:</span>
                 <span className="font-semibold text-red-600">{formatCurrency(debtAmount)}</span>
               </div>
             )}
             {paidAmount > finalAmount && (
-              <div className="flex justify-between text-sm bg-emerald-50 p-2 rounded-lg">
-                <span className="text-emerald-600">Tiền thừa:</span>
+              <div className="flex justify-between text-xs bg-emerald-50 p-1.5 rounded">
+                <span className="text-emerald-600">Thừa:</span>
                 <span className="font-semibold text-emerald-600">{formatCurrency(paidAmount - finalAmount)}</span>
               </div>
             )}
 
-            {/* Note */}
-            <textarea
-              placeholder="Ghi chú (tùy chọn)"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
-              rows={2}
-            />
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-2 pt-1">
               <button
                 onClick={clearCart}
                 disabled={cart.length === 0}
-                className="flex-1 py-3 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium transition-colors disabled:opacity-50"
+                className="flex-1 py-2 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium disabled:opacity-50"
               >
                 Hủy
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={cart.length === 0 || submitting}
-                className="flex-[2] py-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-xl font-medium transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-violet-500/25"
+                className="flex-[2] py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-medium text-xs disabled:opacity-50 flex items-center justify-center gap-1"
               >
-                {submitting ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <CheckCircle className="w-5 h-5" />
-                    Thanh toán
-                  </>
-                )}
+                {submitting ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  : <><CheckCircle className="w-4 h-4" /> Thanh toán</>}
               </button>
             </div>
           </div>

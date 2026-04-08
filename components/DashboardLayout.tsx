@@ -168,23 +168,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <main className="p-4 sm:p-6 lg:p-8 relative">
           {children}
           
-          {/* FAB for quick actions */}
-          <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
-            <Link
-              href="/pos"
-              className="flex items-center gap-2 px-4 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full shadow-lg shadow-emerald-500/30 transition-all hover:scale-105"
-            >
-              <ShoppingCart className="w-5 h-5" />
-              <span className="font-medium">Bán hàng</span>
-            </Link>
-            <Link
-              href="/products"
-              className="flex items-center gap-2 px-4 py-3 bg-violet-500 hover:bg-violet-600 text-white rounded-full shadow-lg shadow-violet-500/30 transition-all hover:scale-105"
-            >
-              <Plus className="w-5 h-5" />
-              <span className="font-medium">Nhập hàng</span>
-            </Link>
-          </div>
+          {/* FAB - Quick add */}
+          <Link
+            href="/products"
+            className="fixed bottom-6 right-6 w-14 h-14 bg-violet-600 hover:bg-violet-700 text-white rounded-full shadow-lg shadow-violet-500/30 transition-all hover:scale-110 flex items-center justify-center z-40"
+          >
+            <Plus className="w-7 h-7" />
+          </Link>
         </main>
       </div>
     </div>
