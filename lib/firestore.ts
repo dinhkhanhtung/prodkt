@@ -782,7 +782,7 @@ export async function getOrCreateChatRoom(userId: string, otherUserId: string, u
   // Check if room already exists
   const existingRoom = querySnapshot.docs.find(doc => {
     const data = doc.data() as ChatRoom;
-    return data.participants.includes(otherUserId);
+    return data.participants?.includes(otherUserId) ?? false;
   });
   
   if (existingRoom) {
@@ -856,9 +856,8 @@ export async function searchUsers(searchTerm: string, excludeUserId: string): Pr
     limit(20)
   );
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs
-    .filter(doc => doc.id !== excludeUserId)
-    .map(doc => ({ id: doc.id, ...doc.data() } as WithId<UserProfile>));
+  return querySnapshot.docs?.filter(doc => doc.id !== excludeUserId)
+    .map(doc => ({ id: doc.id, ...doc.data() } as WithId<UserProfile>)) ?? [];
 }
 
 // ==================== PARTNER RATING SYSTEM ====================
@@ -1017,9 +1016,8 @@ export async function searchPartners(
   }
 
   const profiles = await getDocs(q);
-  return profiles.docs
-    .filter(doc => doc.id !== excludeUserId)
-    .map(doc => ({ userId: doc.id, ...doc.data() } as PartnerProfile));
+  return profiles.docs?.filter(doc => doc.id !== excludeUserId)
+    .map(doc => ({ userId: doc.id, ...doc.data() } as PartnerProfile)) ?? [];
 }
 
 export const PARTNER_CATEGORIES = {
