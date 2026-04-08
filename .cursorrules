@@ -1,0 +1,70 @@
+# ProDKT - AI Coding Rules
+
+## Project Overview
+- **Name**: ProDKT - Phần mềm Quản lý Bán hàng & Báo cáo Thuế
+- **Type**: Next.js 14 SaaS app with Firebase backend
+- **Target Users**: Hộ Kinh Doanh (SMEs) in Vietnam
+
+## Tech Stack
+- **Frontend**: Next.js 14 (App Router), React, TypeScript, Tailwind CSS
+- **Backend**: Firebase Auth, Cloud Firestore
+- **Storage**: ImgBB API (free image hosting)
+- **Deployment**: Vercel
+
+## Key Architecture
+- **Multi-tenant**: Each user has unique `storeId`, data fully isolated
+- **Auth**: Email/Password + Google Sign-in
+- **Database**: Firestore with collections: users, stores, products, customers, orders, expenses, chat, partners, community posts, B2B marketplace, personal finance
+
+## Project Structure
+```
+app/
+  (auth)/         # Login, Register pages
+  (dashboard)/    # Main app: dashboard, pos, products, etc.
+    partners/     # Hall of Fame, Community, Marketplace
+    chat/         # Messaging between partners
+components/
+  AuthProvider.tsx    # Auth context + persistence
+  DashboardLayout.tsx # Sidebar + navigation
+  WelcomeModal.tsx    # Onboarding for new users
+lib/
+  firestore.ts    # All Firestore schemas and APIs
+  firebase.ts     # Firebase config
+```
+
+## Important Patterns
+1. **Always use `useAuth()`** for user data - includes storeId, role, storeName
+2. **Firestore queries** must filter by storeId for multi-tenancy
+3. **Images** upload to ImgBB via `uploadImageToImgBB()`
+4. **Mobile first** - all components must be responsive
+5. **Auth persistence** - use `browserLocalPersistence` for session
+
+## Colors (Tailwind)
+- Primary: emerald (green) palette - `emerald-500`, `emerald-600`
+- Background: `emerald-50`, `emerald-100`
+- Text: `emerald-900`, `emerald-700`
+
+## Common Issues to Avoid
+- ❌ Don't forget `?.` optional chaining for filter/includes
+- ❌ Don't use undefined in Firestore queries
+- ❌ Don't hardcode storeId - always get from useAuth()
+- ✅ Always handle loading states
+- ✅ Mobile viewport: min touch target 44px
+
+## Build Notes
+- `next.config.js` has `ignoreBuildErrors: true` for TypeScript
+- Vercel auto-deploys from main branch
+- Firebase Auth persistence set to localStorage
+
+## Documentation
+- Full docs in `PROJECT_DOCUMENTATION.md`
+- Keep README.md concise
+
+## New Features (Recent)
+- AI Analysis
+- Chat & Reviews
+- Hall of Fame (partner ratings)
+- B2B Community & Marketplace
+- Personal Finance + Debt Management
+- Welcome Modal with industry selection
+- Google Sign-in
