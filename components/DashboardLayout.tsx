@@ -263,22 +263,24 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                               </p>
                             </div>
                             <div className="flex gap-1">
-                              {!notif.read && (
+                              {!notif.read && notif.id && (
                                 <button 
-                                  onClick={() => handleMarkAsRead(notif.id)}
+                                  onClick={() => handleMarkAsRead(notif.id!)}
                                   className="p-1 text-emerald-600 hover:bg-emerald-100 rounded"
                                   title="Đánh dấu đã đọc"
                                 >
                                   <Check className="w-3 h-3" />
                                 </button>
                               )}
-                              <button 
-                                onClick={() => handleDeleteNotification(notif.id)}
-                                className="p-1 text-red-600 hover:bg-red-50 rounded"
-                                title="Xóa"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </button>
+                              {notif.id && (
+                                <button 
+                                  onClick={() => handleDeleteNotification(notif.id!)}
+                                  className="p-1 text-red-600 hover:bg-red-50 rounded"
+                                  title="Xóa"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              )}
                             </div>
                           </div>
                         </div>
