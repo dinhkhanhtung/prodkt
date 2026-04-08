@@ -6,8 +6,17 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { 
   User, Users, CreditCard, Bell, Palette, Save,
-  CheckCircle, Crown, Shield, Loader2
+  CheckCircle, Crown, Shield, Loader2, Database, Download, FileJson, Truck, Package
 } from 'lucide-react';
+import { 
+  getProducts, getCustomers, getOrders, getSuppliers, getExpenses
+} from '@/lib/firestore';
+import {
+  convertToCSV, downloadCSV, EXPORT_CONFIGS,
+  formatProductsForExport, formatCustomersForExport,
+  formatOrdersForExport, formatExpensesForExport,
+  formatSuppliersForExport, exportAllDataAsJSON
+} from '@/lib/export';
 
 const TABS = [
   { id: 'profile', label: 'Hồ sơ', icon: User },
@@ -15,6 +24,7 @@ const TABS = [
   { id: 'subscription', label: 'Gói dịch vụ', icon: CreditCard },
   { id: 'notifications', label: 'Thông báo', icon: Bell },
   { id: 'appearance', label: 'Giao diện', icon: Palette },
+  { id: 'data', label: 'Sao lưu dữ liệu', icon: Database },
 ];
 
 export default function SettingsPage() {
@@ -37,6 +47,10 @@ export default function SettingsPage() {
     theme: 'light', compact: false,
   });
 
+  // Data export state
+  const [exporting, setExporting] = useState<string | null>(null);
+  const storeId = user?.storeId;
+
   const handleSave = async () => {
     if (!user) return;
     setSaving(true);
@@ -49,6 +63,68 @@ export default function SettingsPage() {
       setTimeout(() => setSaved(false), 3000);
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Export functions
+  const handleExport = async (type: 'products' | 'customers' | 'orders' | 'expenses' | 'suppliers') => {
+    if (!storeId) return;
+    setExporting(type);
+    try {
+      let data: any[] = [];
+      switch (type) {
+        case 'products':
+          data = formatProductsForExport(await getProducts(storeId));
+          break;
+        case 'customers':
+          data = formatCustomersForExport(await getCustomers(storeId));
+          break;
+        case 'orders':
+          data = formatOrdersForExport(await getOrders(storeId));
+          break;
+        case 'expenses':
+          data = formatExpensesForExport(await getExpenses(storeId));
+          break;
+        case 'suppliers':
+          data = formatSuppliersForExport(await getSuppliers(storeId));
+          break;
+      }
+      
+      const config = EXPORT_CONFIGS[type];
+      const csv = convertToCSV(data, config.headers);
+      downloadCSV(csv, config.filename);
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Có lỗi xảy ra khi xuất dữ liệu');
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const handleExportAll = async () => {
+    if (!storeId) return;
+    setExporting('all');
+    try {
+      const [products, customers, orders, expenses, suppliers] = await Promise.all([
+        getProducts(storeId),
+        getCustomers(storeId),
+        getOrders(storeId),
+        getExpenses(storeId),
+        getSuppliers(storeId),
+      ]);
+      
+      exportAllDataAsJSON({
+        products: formatProductsForExport(products),
+        customers: formatCustomersForExport(customers),
+        orders: formatOrdersForExport(orders),
+        expenses: formatExpensesForExport(expenses),
+        suppliers: formatSuppliersForExport(suppliers),
+      });
+    } catch (error) {
+      console.error('Export all error:', error);
+      alert('Có lỗi xảy ra khi sao lưu dữ liệu');
+    } finally {
+      setExporting(null);
     }
   };
 
@@ -186,6 +262,63 @@ export default function SettingsPage() {
                   </div>
                 </label>
               ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'data' && (
+          <div className="bg-white rounded-xl border border-emerald-100 p-6 shadow-sm space-y-6">
+            <div>
+              <h3 className="font-semibold text-emerald-900 mb-2">Xuất dữ liệu</h3>
+              <p className="text-sm text-emerald-600/70 mb-4">Tải xuống dữ liệu của bạn dưới dạng CSV</p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  { key: 'products', label: 'Sản phẩm', icon: Package },
+                  { key: 'customers', label: 'Khách hàng', icon: Users },
+                  { key: 'orders', label: 'Hóa đơn', icon: FileJson },
+                  { key: 'expenses', label: 'Chi phí', icon: Database },
+                  { key: 'suppliers', label: 'Nhà cung cấp', icon: Truck },
+                ].map(({ key, label, icon: Icon }) => (
+                  <button
+                    key={key}
+                    onClick={() => handleExport(key as any)}
+                    disabled={exporting === key}
+                    className="flex items-center gap-3 p-4 border border-emerald-100 rounded-xl hover:bg-emerald-50/50 transition-colors text-left"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-emerald-900">{label}</p>
+                      <p className="text-xs text-emerald-600/70">Xuất CSV</p>
+                    </div>
+                    {exporting === key ? (
+                      <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" />
+                    ) : (
+                      <Download className="w-5 h-5 text-emerald-400" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-emerald-100 pt-6">
+              <h3 className="font-semibold text-emerald-900 mb-2">Sao lưu toàn bộ</h3>
+              <p className="text-sm text-emerald-600/70 mb-4">Tải xuống tất cả dữ liệu dưới dạng JSON</p>
+              
+              <button
+                onClick={handleExportAll}
+                disabled={exporting === 'all'}
+                className="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                {exporting === 'all' ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Download className="w-5 h-5" />
+                )}
+                Sao lưu toàn bộ dữ liệu
+              </button>
             </div>
           </div>
         )}
