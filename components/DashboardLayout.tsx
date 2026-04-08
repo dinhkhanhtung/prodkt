@@ -26,7 +26,9 @@ import {
   ChevronDown, 
   Wallet, 
   BarChart3, 
-  Settings2 
+  Settings2,
+  MessageCircle,
+  Sparkles
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -138,6 +140,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Hóa đơn', href: '/orders', icon: Receipt },
     { name: 'Chi phí', href: '/expenses', icon: Wallet },
     { name: 'Báo cáo', href: '/reports', icon: BarChart3 },
+    { name: 'AI Phân tích', href: '/ai-analysis', icon: Sparkles },
+    { name: 'Chat', href: '/chat', icon: MessageCircle },
     { name: 'Trường tùy chỉnh', href: '/custom-fields', icon: Settings2 },
     { name: 'Cài đặt', href: '/settings', icon: Settings },
     ...(isAdmin ? [{ name: 'Quản trị', href: '/admin', icon: Shield }] : []),

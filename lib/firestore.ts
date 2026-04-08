@@ -10,6 +10,7 @@ import {
   where,
   orderBy,
   limit,
+  limitToLast,
   serverTimestamp,
   DocumentData,
   QueryDocumentSnapshot,
@@ -28,6 +29,19 @@ const COLLECTIONS = {
   USERS: 'users',
   STORES: 'stores',
 } as const;
+
+// User Profile type
+export interface UserProfile {
+  id?: string;
+  uid: string;
+  email: string;
+  storeName: string;
+  phone?: string;
+  address?: string;
+  role: 'owner' | 'admin' | 'staff';
+  createdAt: string;
+  updatedAt: string;
+}
 
 // Helper to get store-specific collection reference
 function getStoreCollection(storeId: string, collectionName: string) {
@@ -715,4 +729,134 @@ export async function markAllAsRead(userId: string): Promise<void> {
 export async function deleteNotification(userId: string, notificationId: string): Promise<void> {
   const notifRef = doc(db, 'users', userId, NOTIFICATIONS_COLLECTION, notificationId);
   await deleteDoc(notifRef);
+}
+
+// ==================== CHAT SYSTEM ====================
+
+export interface ChatRoom {
+  id?: string;
+  participants: string[];
+  participantNames: Record<string, string>;
+  lastMessage?: {
+    text: string;
+    senderId: string;
+    timestamp: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChatMessage {
+  id?: string;
+  roomId: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  read: boolean;
+  createdAt: string;
+}
+
+const CHAT_ROOMS_COLLECTION = 'chatRooms';
+const CHAT_MESSAGES_COLLECTION = 'messages';
+
+export function getChatRoomsCollection() {
+  return collection(db, CHAT_ROOMS_COLLECTION);
+}
+
+export function getChatMessagesCollection(roomId: string) {
+  return collection(db, CHAT_ROOMS_COLLECTION, roomId, CHAT_MESSAGES_COLLECTION);
+}
+
+export async function getUserChatRooms(userId: string): Promise<WithId<ChatRoom>[]> {
+  const roomsCol = getChatRoomsCollection();
+  const q = query(roomsCol, where('participants', 'array-contains', userId), orderBy('updatedAt', 'desc'));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<ChatRoom>));
+}
+
+export async function getOrCreateChatRoom(userId: string, otherUserId: string, userName: string, otherUserName: string): Promise<string> {
+  const roomsCol = getChatRoomsCollection();
+  const q = query(roomsCol, where('participants', 'array-contains', userId));
+  const querySnapshot = await getDocs(q);
+  
+  // Check if room already exists
+  const existingRoom = querySnapshot.docs.find(doc => {
+    const data = doc.data() as ChatRoom;
+    return data.participants.includes(otherUserId);
+  });
+  
+  if (existingRoom) {
+    return existingRoom.id;
+  }
+  
+  // Create new room
+  const roomData: Omit<ChatRoom, 'id'> = {
+    participants: [userId, otherUserId],
+    participantNames: {
+      [userId]: userName,
+      [otherUserId]: otherUserName,
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  
+  const docRef = await addDoc(roomsCol, roomData);
+  return docRef.id;
+}
+
+export async function getChatMessages(roomId: string, limit = 50): Promise<WithId<ChatMessage>[]> {
+  const messagesCol = getChatMessagesCollection(roomId);
+  const q = query(messagesCol, orderBy('createdAt', 'desc'), limitToLast(limit));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<ChatMessage>)).reverse();
+}
+
+export async function sendMessage(roomId: string, senderId: string, senderName: string, text: string): Promise<void> {
+  const messageData: Omit<ChatMessage, 'id'> = {
+    roomId,
+    senderId,
+    senderName,
+    text,
+    read: false,
+    createdAt: new Date().toISOString(),
+  };
+  
+  await addDoc(getChatMessagesCollection(roomId), messageData);
+  
+  // Update room last message
+  const roomRef = doc(db, CHAT_ROOMS_COLLECTION, roomId);
+  await updateDoc(roomRef, {
+    lastMessage: {
+      text,
+      senderId,
+      timestamp: new Date().toISOString(),
+    },
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function markMessagesAsRead(roomId: string, userId: string): Promise<void> {
+  const messagesCol = getChatMessagesCollection(roomId);
+  const q = query(messagesCol, where('senderId', '!=', userId), where('read', '==', false));
+  const querySnapshot = await getDocs(q);
+  
+  const batch = querySnapshot.docs.map(docSnapshot =>
+    updateDoc(doc(db, CHAT_ROOMS_COLLECTION, roomId, CHAT_MESSAGES_COLLECTION, docSnapshot.id), { read: true })
+  );
+  
+  await Promise.all(batch);
+}
+
+export async function searchUsers(searchTerm: string, excludeUserId: string): Promise<WithId<UserProfile>[]> {
+  const usersCol = collection(db, COLLECTIONS.USERS);
+  const q = query(
+    usersCol,
+    where('storeName', '>=', searchTerm),
+    where('storeName', '<=', searchTerm + '\uf8ff'),
+    limit(20)
+  );
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs
+    .filter(doc => doc.id !== excludeUserId)
+    .map(doc => ({ id: doc.id, ...doc.data() } as WithId<UserProfile>));
 }
