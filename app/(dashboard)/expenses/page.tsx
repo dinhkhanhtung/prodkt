@@ -390,7 +390,7 @@ export default function ExpensesPage() {
                   ))}
                 </Pie>
                 <RechartsTooltip 
-                  formatter={(value: number) => formatCurrency(value)}
+                  formatter={(value) => typeof value === 'number' ? formatCurrency(value) : value}
                   contentStyle={{ borderRadius: '8px', border: '1px solid #d1fae5' }}
                 />
                 <Legend />

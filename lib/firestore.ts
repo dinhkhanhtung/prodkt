@@ -860,3 +860,179 @@ export async function searchUsers(searchTerm: string, excludeUserId: string): Pr
     .filter(doc => doc.id !== excludeUserId)
     .map(doc => ({ id: doc.id, ...doc.data() } as WithId<UserProfile>));
 }
+
+// ==================== PARTNER RATING SYSTEM ====================
+
+export interface PartnerRating {
+  id?: string;
+  partnerId: string; // User being rated
+  raterId: string; // User who gives rating
+  raterStoreId: string;
+  orderId: string; // Must have order to rate
+  rating: number; // 1-5 stars
+  review: string;
+  categories: string[]; // Product categories they deal with
+  createdAt: string;
+}
+
+export interface PartnerProfile {
+  userId: string;
+  storeName: string;
+  categories: string[]; // e.g., ['electronics', 'fashion', 'food']
+  averageRating: number;
+  totalReviews: number;
+  totalTransactions: number;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const PARTNER_RATINGS_COLLECTION = 'partnerRatings';
+const PARTNER_PROFILES_COLLECTION = 'partnerProfiles';
+
+export async function addPartnerRating(
+  raterId: string,
+  raterStoreId: string,
+  partnerId: string,
+  orderId: string,
+  rating: number,
+  review: string,
+  categories: string[]
+): Promise<void> {
+  // Check if already rated this order
+  const ratingsCol = collection(db, PARTNER_RATINGS_COLLECTION);
+  const q = query(
+    ratingsCol,
+    where('raterId', '==', raterId),
+    where('orderId', '==', orderId)
+  );
+  const existing = await getDocs(q);
+  if (!existing.empty) {
+    throw new Error('Bạn đã đánh giá đối tác này cho đơn hàng này');
+  }
+
+  const ratingData: PartnerRating = {
+    partnerId,
+    raterId,
+    raterStoreId,
+    orderId,
+    rating,
+    review,
+    categories,
+    createdAt: new Date().toISOString(),
+  };
+
+  await addDoc(ratingsCol, ratingData);
+  await updatePartnerProfile(partnerId);
+}
+
+export async function updatePartnerProfile(partnerId: string): Promise<void> {
+  const ratingsCol = collection(db, PARTNER_RATINGS_COLLECTION);
+  const q = query(ratingsCol, where('partnerId', '==', partnerId));
+  const ratings = await getDocs(q);
+  
+  const ratingsList = ratings.docs.map(d => d.data() as PartnerRating);
+  const avgRating = ratingsList.length > 0
+    ? ratingsList.reduce((sum, r) => sum + r.rating, 0) / ratingsList.length
+    : 0;
+
+  // Get all unique categories
+  const allCategories = ratingsList.flatMap(r => r.categories);
+  const uniqueCategories = [...new Set(allCategories)];
+
+  const profileRef = doc(db, PARTNER_PROFILES_COLLECTION, partnerId);
+  const profileDoc = await getDoc(profileRef);
+
+  if (profileDoc.exists()) {
+    await updateDoc(profileRef, {
+      averageRating: avgRating,
+      totalReviews: ratingsList.length,
+      categories: uniqueCategories,
+      updatedAt: new Date().toISOString(),
+    });
+  }
+}
+
+export async function getPartnerProfile(partnerId: string): Promise<PartnerProfile | null> {
+  const profileRef = doc(db, PARTNER_PROFILES_COLLECTION, partnerId);
+  const profileDoc = await getDoc(profileRef);
+  if (!profileDoc.exists()) return null;
+  return { userId: partnerId, ...profileDoc.data() } as PartnerProfile;
+}
+
+export async function getPartnerRatings(partnerId: string): Promise<WithId<PartnerRating>[]> {
+  const ratingsCol = collection(db, PARTNER_RATINGS_COLLECTION);
+  const q = query(ratingsCol, where('partnerId', '==', partnerId), orderBy('createdAt', 'desc'));
+  const ratings = await getDocs(q);
+  return ratings.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<PartnerRating>));
+}
+
+// Check if users have transaction history (for chat permission)
+export async function hasTransactionHistory(userId: string, partnerId: string): Promise<boolean> {
+  // Check if there's any order between these two users
+  const ordersCol = collection(db, 'orders');
+  
+  // Check user as customer, partner as supplier
+  const q1 = query(
+    ordersCol,
+    where('userId', '==', userId),
+    where('supplierId', '==', partnerId),
+    limit(1)
+  );
+  
+  // Check user as supplier, partner as customer  
+  const q2 = query(
+    ordersCol,
+    where('userId', '==', partnerId),
+    where('supplierId', '==', userId),
+    limit(1)
+  );
+  
+  const [result1, result2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+  
+  return !result1.empty || !result2.empty;
+}
+
+// Search partners with filters
+export async function searchPartners(
+  searchTerm: string,
+  category?: string,
+  minRating?: number,
+  excludeUserId?: string
+): Promise<PartnerProfile[]> {
+  const profilesCol = collection(db, PARTNER_PROFILES_COLLECTION);
+  let q = query(
+    profilesCol,
+    where('storeName', '>=', searchTerm),
+    where('storeName', '<=', searchTerm + '\uf8ff'),
+    orderBy('averageRating', 'desc')
+  );
+
+  if (category) {
+    q = query(q, where('categories', 'array-contains', category));
+  }
+
+  if (minRating) {
+    q = query(q, where('averageRating', '>=', minRating));
+  }
+
+  const profiles = await getDocs(q);
+  return profiles.docs
+    .filter(doc => doc.id !== excludeUserId)
+    .map(doc => ({ userId: doc.id, ...doc.data() } as PartnerProfile));
+}
+
+export const PARTNER_CATEGORIES = {
+  electronics: 'Điện tử',
+  fashion: 'Thời trang',
+  food: 'Thực phẩm',
+  beauty: 'Mỹ phẩm',
+  home: 'Nội thất',
+  toys: 'Đồ chơi',
+  books: 'Sách',
+  sports: 'Thể thao',
+  automotive: 'Ô tô & Phụ tùng',
+  health: 'Sức khỏe',
+  office: 'Văn phòng phẩm',
+  other: 'Khác',
+} as const;
