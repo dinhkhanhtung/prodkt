@@ -1036,3 +1036,209 @@ export const PARTNER_CATEGORIES = {
   office: 'Văn phòng phẩm',
   other: 'Khác',
 } as const;
+
+// ==================== PERSONAL FINANCE (from Vidu Family) ====================
+
+export interface PersonalTransaction {
+  id?: string;
+  userId: string;
+  type: 'income' | 'expense';
+  amount: number;
+  category: string;
+  note: string;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PersonalDebt {
+  id?: string;
+  userId: string;
+  type: 'borrow' | 'lend'; // borrow = vay, lend = cho vay
+  personName: string;
+  personPhone?: string;
+  amount: number;
+  paidAmount: number;
+  status: 'active' | 'paid' | 'overdue';
+  dueDate?: string;
+  note: string;
+  linkedCustomerId?: string; // link to customer if applicable
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecurringTransaction {
+  id?: string;
+  userId: string;
+  name: string;
+  type: 'income' | 'expense';
+  amount: number;
+  category: string;
+  frequency: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  startDate: string;
+  endDate?: string;
+  nextDate: string;
+  active: boolean;
+  note: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const PERSONAL_TRANSACTIONS_COLLECTION = 'personalTransactions';
+const PERSONAL_DEBTS_COLLECTION = 'personalDebts';
+const RECURRING_TRANSACTIONS_COLLECTION = 'recurringTransactions';
+
+// Personal Transaction APIs
+export async function getPersonalTransactions(
+  userId: string,
+  startDate?: string,
+  endDate?: string
+): Promise<WithId<PersonalTransaction>[]> {
+  const col = collection(db, PERSONAL_TRANSACTIONS_COLLECTION);
+  let q = query(col, where('userId', '==', userId), orderBy('date', 'desc'));
+  
+  if (startDate) {
+    q = query(q, where('date', '>=', startDate));
+  }
+  if (endDate) {
+    q = query(q, where('date', '<=', endDate));
+  }
+  
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<PersonalTransaction>));
+}
+
+export async function addPersonalTransaction(
+  userId: string,
+  data: Omit<PersonalTransaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
+): Promise<string> {
+  const col = collection(db, PERSONAL_TRANSACTIONS_COLLECTION);
+  const docRef = await addDoc(col, {
+    ...data,
+    userId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function updatePersonalTransaction(
+  transactionId: string,
+  data: Partial<PersonalTransaction>
+): Promise<void> {
+  const ref = doc(db, PERSONAL_TRANSACTIONS_COLLECTION, transactionId);
+  await updateDoc(ref, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deletePersonalTransaction(transactionId: string): Promise<void> {
+  await deleteDoc(doc(db, PERSONAL_TRANSACTIONS_COLLECTION, transactionId));
+}
+
+// Personal Debt APIs
+export async function getPersonalDebts(userId: string): Promise<WithId<PersonalDebt>[]> {
+  const col = collection(db, PERSONAL_DEBTS_COLLECTION);
+  const q = query(col, where('userId', '==', userId), orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<PersonalDebt>));
+}
+
+export async function addPersonalDebt(
+  userId: string,
+  data: Omit<PersonalDebt, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'paidAmount'>
+): Promise<string> {
+  const col = collection(db, PERSONAL_DEBTS_COLLECTION);
+  const docRef = await addDoc(col, {
+    ...data,
+    userId,
+    paidAmount: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function updateDebtPayment(
+  debtId: string,
+  paymentAmount: number
+): Promise<void> {
+  const ref = doc(db, PERSONAL_DEBTS_COLLECTION, debtId);
+  const debtDoc = await getDoc(ref);
+  if (!debtDoc.exists()) throw new Error('Debt not found');
+  
+  const debt = debtDoc.data() as PersonalDebt;
+  const newPaidAmount = debt.paidAmount + paymentAmount;
+  const newStatus = newPaidAmount >= debt.amount ? 'paid' : debt.status;
+  
+  await updateDoc(ref, {
+    paidAmount: newPaidAmount,
+    status: newStatus,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deletePersonalDebt(debtId: string): Promise<void> {
+  await deleteDoc(doc(db, PERSONAL_DEBTS_COLLECTION, debtId));
+}
+
+// Recurring Transaction APIs
+export async function getRecurringTransactions(userId: string): Promise<WithId<RecurringTransaction>[]> {
+  const col = collection(db, RECURRING_TRANSACTIONS_COLLECTION);
+  const q = query(col, where('userId', '==', userId), orderBy('nextDate', 'asc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<RecurringTransaction>));
+}
+
+export async function addRecurringTransaction(
+  userId: string,
+  data: Omit<RecurringTransaction, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
+): Promise<string> {
+  const col = collection(db, RECURRING_TRANSACTIONS_COLLECTION);
+  const docRef = await addDoc(col, {
+    ...data,
+    userId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
+  return docRef.id;
+}
+
+export async function updateRecurringTransaction(
+  transactionId: string,
+  data: Partial<RecurringTransaction>
+): Promise<void> {
+  const ref = doc(db, RECURRING_TRANSACTIONS_COLLECTION, transactionId);
+  await updateDoc(ref, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deleteRecurringTransaction(transactionId: string): Promise<void> {
+  await deleteDoc(doc(db, RECURRING_TRANSACTIONS_COLLECTION, transactionId));
+}
+
+// Categories for personal finance
+export const PERSONAL_CATEGORIES: Record<string, Record<string, string>> = {
+  income: {
+    salary: 'Lương',
+    bonus: 'Thưởng',
+    investment: 'Đầu tư',
+    freelance: 'Freelance',
+    gift: 'Quà tặng',
+    other_income: 'Thu nhập khác',
+  },
+  expense: {
+    food: 'Ăn uống',
+    transport: 'Đi lại',
+    shopping: 'Mua sắm',
+    entertainment: 'Giải trí',
+    health: 'Y tế',
+    education: 'Học tập',
+    housing: 'Nhà ở',
+    utilities: 'Hóa đơn',
+    other_expense: 'Chi tiêu khác',
+  },
+};

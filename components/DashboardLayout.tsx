@@ -28,7 +28,9 @@ import {
   BarChart3, 
   Settings2,
   MessageCircle,
-  Sparkles
+  Sparkles,
+  Repeat,
+  HandCoins
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -142,6 +144,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Báo cáo', href: '/reports', icon: BarChart3 },
     { name: 'AI Phân tích', href: '/ai-analysis', icon: Sparkles },
     { name: 'Chat', href: '/chat', icon: MessageCircle },
+    { name: 'Tài chính cá nhân', href: '/personal-finance', icon: Wallet },
+    { name: 'Quản lý nợ', href: '/debts', icon: HandCoins },
+    { name: 'Giao dịch định kỳ', href: '/recurring', icon: Repeat },
     { name: 'Trường tùy chỉnh', href: '/custom-fields', icon: Settings2 },
     { name: 'Cài đặt', href: '/settings', icon: Settings },
     ...(isAdmin ? [{ name: 'Quản trị', href: '/admin', icon: Shield }] : []),
