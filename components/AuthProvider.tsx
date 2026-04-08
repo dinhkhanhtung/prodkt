@@ -14,6 +14,7 @@ import { auth, db } from '@/lib/firebase';
 interface User extends FirebaseUser {
   storeId?: string;
   role?: string;
+  storeName?: string;
 }
 
 interface AuthContextType {
