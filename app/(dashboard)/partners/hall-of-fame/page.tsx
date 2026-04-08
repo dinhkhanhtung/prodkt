@@ -28,7 +28,7 @@ export default function HallOfFamePage() {
 
   const filteredPartners = selectedCategory === 'all' 
     ? partners 
-    : partners.filter(p => p.categories.includes(selectedCategory));
+    : partners.filter(p => p.categories?.includes(selectedCategory) ?? false);
 
   const getRankColor = (index: number) => {
     if (index === 0) return 'from-yellow-400 to-amber-500'; // Gold
