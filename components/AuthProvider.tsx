@@ -5,6 +5,8 @@ import {
   onAuthStateChanged, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut,
   User as FirebaseUser 
 } from 'firebase/auth';
@@ -22,6 +24,7 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, storeName: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -83,12 +86,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   };
 
+  const loginWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    
+    // Check if user exists in Firestore, if not create
+    const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+    if (!userDoc.exists()) {
+      // Create new user with Google data
+      await setDoc(doc(db, 'users', result.user.uid), {
+        email: result.user.email,
+        storeName: result.user.displayName || 'My Store',
+        createdAt: new Date().toISOString(),
+        role: 'owner',
+      });
+    }
+  };
+
   const logout = async () => {
     await signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   );

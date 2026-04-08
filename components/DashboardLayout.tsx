@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
+import WelcomeModal from './WelcomeModal';
 import { getNotifications, getUnreadCount, markNotificationAsRead, markAllAsRead, deleteNotification, Notification } from '@/lib/firestore';
 import { 
   LayoutDashboard, 
@@ -337,6 +338,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </Link>
         </main>
       </div>
+      
+      {/* Welcome Modal for new users */}
+      <WelcomeModal />
     </div>
   );
 }
