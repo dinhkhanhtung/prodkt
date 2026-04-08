@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
@@ -35,15 +35,15 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-emerald-50/50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Package className="w-12 h-12 text-primary-600" />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-bold text-emerald-900">
           Đăng nhập ProDKT
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-emerald-700">
           Hoặc{' '}
           <Link href="/register" className="text-primary-600 hover:text-primary-500">
             đăng ký tài khoản mới
@@ -108,7 +108,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-emerald-50/50 flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
       </div>
     }>

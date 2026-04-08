@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -132,19 +132,19 @@ function PaymentContent() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-emerald-50/50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center">
           <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Clock className="w-8 h-8 text-yellow-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Đã nhận thanh toán!</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-bold text-emerald-900 mb-2">Đã nhận thanh toán!</h2>
+          <p className="text-emerald-700 mb-6">
             Chúng tôi đã nhận được chứng từ thanh toán của bạn. 
             Admin sẽ kiểm tra và kích hoạt PRO trong vòng 24 giờ.
           </p>
-          <div className="bg-gray-50 rounded-lg p-4 mb-6 text-left">
-            <p className="text-sm text-gray-600">Mã thanh toán:</p>
-            <p className="font-mono font-medium text-gray-900">PRODKT-{user?.uid?.slice(0, 8)}</p>
+          <div className="bg-emerald-50/50 rounded-lg p-4 mb-6 text-left">
+            <p className="text-sm text-emerald-700">Mã thanh toán:</p>
+            <p className="font-mono font-medium text-emerald-900">PRODKT-{user?.uid?.slice(0, 8)}</p>
           </div>
           <Link href="/dashboard" className="btn-primary block w-full">
             Về Dashboard
@@ -156,7 +156,7 @@ function PaymentContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-emerald-50/50 flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
       </div>
     );
@@ -164,11 +164,11 @@ function PaymentContent() {
 
   if (accounts.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-emerald-50/50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center">
           <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Chưa có tài khoản ngân hàng</h2>
-          <p className="text-gray-600 mb-4">
+          <h2 className="text-xl font-bold text-emerald-900 mb-2">Chưa có tài khoản ngân hàng</h2>
+          <p className="text-emerald-700 mb-4">
             Hệ thống đang cập nhật phương thức thanh toán. Vui lòng quay lại sau.
           </p>
           <Link href="/upgrade" className="btn-secondary block w-full">
@@ -180,18 +180,18 @@ function PaymentContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-emerald-50/50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         {/* Back Link */}
-        <Link href="/upgrade" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6">
+        <Link href="/upgrade" className="inline-flex items-center gap-2 text-emerald-700 hover:text-emerald-900 mb-6">
           <ArrowLeft className="w-4 h-4" />
           Quay lại chọn gói
         </Link>
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Thanh toán {planName}</h1>
-          <p className="text-gray-600 mt-1">Chuyển khoản và upload chứng từ để kích hoạt PRO</p>
+          <h1 className="text-2xl font-bold text-emerald-900">Thanh toán {planName}</h1>
+          <p className="text-emerald-700 mt-1">Chuyển khoản và upload chứng từ để kích hoạt PRO</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -208,7 +208,7 @@ function PaymentContent() {
 
             {/* Bank Selection */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <h3 className="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-primary-600" />
                 Chọn ngân hàng
               </h3>
@@ -220,20 +220,20 @@ function PaymentContent() {
                     className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-colors text-left ${
                       selectedAccount?.id === account.id
                         ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-100 hover:border-gray-200'
+                        : 'border-gray-100 hover:border-emerald-100'
                     }`}
                   >
                     <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
                       selectedAccount?.id === account.id
                         ? 'border-primary-500'
-                        : 'border-gray-300'
+                        : 'border-emerald-200'
                     }`}>
                       {selectedAccount?.id === account.id && (
                         <div className="w-2.5 h-2.5 bg-primary-500 rounded-full" />
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">{account.bankName}</p>
+                      <p className="font-medium text-emerald-900">{account.bankName}</p>
                       {account.isDefault && (
                         <span className="text-xs text-primary-600">Mặc định</span>
                       )}
@@ -246,7 +246,7 @@ function PaymentContent() {
             {/* Bank Details */}
             {selectedAccount && (
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                <h3 className="font-semibold text-gray-900 mb-4">Thông tin chuyển khoản</h3>
+                <h3 className="font-semibold text-emerald-900 mb-4">Thông tin chuyển khoản</h3>
                 
                 {/* QR Code */}
                 {selectedAccount.qrImageUrl && (
@@ -256,15 +256,15 @@ function PaymentContent() {
                       alt="QR Code"
                       className="w-48 h-48 object-contain mx-auto border rounded-xl"
                     />
-                    <p className="text-sm text-gray-500 mt-2">Quét mã QR để chuyển khoản nhanh</p>
+                    <p className="text-sm text-emerald-600/70 mt-2">Quét mã QR để chuyển khoản nhanh</p>
                   </div>
                 )}
 
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Chủ tài khoản</p>
-                    <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                      <span className="font-medium text-gray-900">{selectedAccount.accountName}</span>
+                    <p className="text-sm text-emerald-600/70 mb-1">Chủ tài khoản</p>
+                    <div className="flex items-center justify-between bg-emerald-50/50 rounded-lg p-3">
+                      <span className="font-medium text-emerald-900">{selectedAccount.accountName}</span>
                       <button
                         onClick={() => handleCopy(selectedAccount.accountName, 'chủ TK')}
                         className="text-primary-600 hover:text-primary-700"
@@ -275,9 +275,9 @@ function PaymentContent() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Số tài khoản</p>
-                    <div className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
-                      <span className="font-medium text-gray-900 font-mono">{selectedAccount.accountNumber}</span>
+                    <p className="text-sm text-emerald-600/70 mb-1">Số tài khoản</p>
+                    <div className="flex items-center justify-between bg-emerald-50/50 rounded-lg p-3">
+                      <span className="font-medium text-emerald-900 font-mono">{selectedAccount.accountNumber}</span>
                       <button
                         onClick={() => handleCopy(selectedAccount.accountNumber, 'STK')}
                         className="text-primary-600 hover:text-primary-700"
@@ -288,9 +288,9 @@ function PaymentContent() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">Nội dung chuyển khoản</p>
+                    <p className="text-sm text-emerald-600/70 mb-1">Nội dung chuyển khoản</p>
                     <div className="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                      <span className="font-medium text-gray-900 font-mono">
+                      <span className="font-medium text-emerald-900 font-mono">
                         PRODKT-{user?.uid?.slice(0, 8)}
                       </span>
                       <button
@@ -311,7 +311,7 @@ function PaymentContent() {
 
           {/* Right: Upload Form */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-fit">
-            <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
               <Upload className="w-5 h-5 text-primary-600" />
               Xác nhận thanh toán
             </h3>
@@ -337,14 +337,14 @@ function PaymentContent() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-primary-500 hover:bg-gray-50 transition-colors">
+                  <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-emerald-200 rounded-xl cursor-pointer hover:border-primary-500 hover:bg-emerald-50/50 transition-colors">
                     {uploading ? (
                       <Loader2 className="w-8 h-8 text-primary-600 animate-spin" />
                     ) : (
                       <>
-                        <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                        <p className="text-sm text-gray-500">Click để upload ảnh</p>
-                        <p className="text-xs text-gray-400 mt-1">Hỗ trợ JPG, PNG</p>
+                        <Upload className="w-8 h-8 text-emerald-400 mb-2" />
+                        <p className="text-sm text-emerald-600/70">Click để upload ảnh</p>
+                        <p className="text-xs text-emerald-400 mt-1">Hỗ trợ JPG, PNG</p>
                       </>
                     )}
                     <input
@@ -367,7 +367,7 @@ function PaymentContent() {
                   type="datetime-local"
                   value={transferredAt}
                   onChange={(e) => setTransferredAt(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-emerald-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
 
@@ -380,7 +380,7 @@ function PaymentContent() {
                   value={receiptNote}
                   onChange={(e) => setReceiptNote(e.target.value)}
                   placeholder="Ví dụ: Chuyển từ Momo, tên khác trên TK..."
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2 border border-emerald-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                   rows={3}
                 />
               </div>
@@ -404,7 +404,7 @@ function PaymentContent() {
                 )}
               </button>
 
-              <p className="text-xs text-gray-500 text-center">
+              <p className="text-xs text-emerald-600/70 text-center">
                 Admin sẽ kiểm tra và kích hoạt PRO trong vòng 24 giờ
               </p>
             </div>

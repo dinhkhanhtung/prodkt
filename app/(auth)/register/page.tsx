@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -43,15 +43,15 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-emerald-50/50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Package className="w-12 h-12 text-primary-600" />
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+        <h2 className="mt-6 text-center text-3xl font-bold text-emerald-900">
           Đăng ký ProDKT
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-2 text-center text-sm text-emerald-700">
           Miễn phí 100% - Không cần thẻ tín dụng
         </p>
       </div>
@@ -108,7 +108,7 @@ export default function RegisterPage() {
                 className="input mt-1"
                 placeholder="••••••••"
               />
-              <p className="mt-1 text-xs text-gray-500">Ít nhất 6 ký tự</p>
+              <p className="mt-1 text-xs text-emerald-600/70">Ít nhất 6 ký tự</p>
             </div>
 
             <div>
@@ -137,7 +137,7 @@ export default function RegisterPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-emerald-700">
               Đã có tài khoản?{' '}
               <Link href="/login" className="text-primary-600 hover:text-primary-500">
                 Đăng nhập

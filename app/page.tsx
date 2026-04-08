@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -113,19 +113,19 @@ export default function LandingPage() {
               <div className="w-8 h-8 bg-gradient-to-br from-primary-600 to-primary-700 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-lg">P</span>
               </div>
-              <span className="text-xl font-bold text-gray-900">ProDKT</span>
+              <span className="text-xl font-bold text-emerald-900">ProDKT</span>
             </Link>
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium">Tính năng</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 font-medium">Bảng giá</a>
-              <a href="#faq" className="text-gray-600 hover:text-gray-900 font-medium">FAQ</a>
+              <a href="#features" className="text-emerald-700 hover:text-emerald-900 font-medium">Tính năng</a>
+              <a href="#pricing" className="text-emerald-700 hover:text-emerald-900 font-medium">Bảng giá</a>
+              <a href="#faq" className="text-emerald-700 hover:text-emerald-900 font-medium">FAQ</a>
             </div>
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-4">
-              <Link href="/login" className="text-gray-600 hover:text-gray-900 font-medium">
+              <Link href="/login" className="text-emerald-700 hover:text-emerald-900 font-medium">
                 Đăng nhập
               </Link>
               <Link href="/register" className="btn-primary">
@@ -147,11 +147,11 @@ export default function LandingPage() {
         {mobileMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-100">
             <div className="px-4 py-4 space-y-3">
-              <a href="#features" className="block text-gray-600 hover:text-gray-900 font-medium">Tính năng</a>
-              <a href="#pricing" className="block text-gray-600 hover:text-gray-900 font-medium">Bảng giá</a>
-              <a href="#faq" className="block text-gray-600 hover:text-gray-900 font-medium">FAQ</a>
+              <a href="#features" className="block text-emerald-700 hover:text-emerald-900 font-medium">Tính năng</a>
+              <a href="#pricing" className="block text-emerald-700 hover:text-emerald-900 font-medium">Bảng giá</a>
+              <a href="#faq" className="block text-emerald-700 hover:text-emerald-900 font-medium">FAQ</a>
               <hr className="border-gray-100" />
-              <Link href="/login" className="block text-gray-600 hover:text-gray-900 font-medium">Đăng nhập</Link>
+              <Link href="/login" className="block text-emerald-700 hover:text-emerald-900 font-medium">Đăng nhập</Link>
               <Link href="/register" className="block btn-primary text-center">Dùng miễn phí</Link>
             </div>
           </div>
@@ -167,13 +167,13 @@ export default function LandingPage() {
                 <Star className="w-4 h-4 fill-current" />
                 Miễn phí vĩnh viễn cho Hộ Kinh Doanh
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-emerald-900 leading-tight mb-6">
                 Phần mềm quản lý bán hàng{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
                   0đ chi phí
                 </span>
               </h1>
-              <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-lg">
+              <p className="text-lg sm:text-xl text-emerald-700 mb-8 max-w-lg">
                 Tất cả trong một: Bán hàng POS, quản lý kho, công nợ, báo cáo thuế. 
                 Không giới hạn thời gian dùng thử - hoàn toàn miễn phí.
               </p>
@@ -190,7 +190,7 @@ export default function LandingPage() {
                   Xem demo
                 </a>
               </div>
-              <div className="mt-8 flex items-center gap-4 text-sm text-gray-500">
+              <div className="mt-8 flex items-center gap-4 text-sm text-emerald-600/70">
                 <div className="flex -space-x-2">
                   {[1,2,3,4].map(i => (
                     <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 border-2 border-white flex items-center justify-center text-white text-xs font-bold">
@@ -210,35 +210,35 @@ export default function LandingPage() {
                     <div className="w-3 h-3 rounded-full bg-yellow-400" />
                     <div className="w-3 h-3 rounded-full bg-green-400" />
                   </div>
-                  <span className="text-sm text-gray-500">ProDKT POS</span>
+                  <span className="text-sm text-emerald-600/70">ProDKT POS</span>
                 </div>
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-emerald-50/50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
                         <Package className="w-5 h-5 text-primary-600" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Áo thun nam</p>
-                        <p className="text-sm text-gray-500">x2</p>
+                        <p className="font-medium text-emerald-900">Áo thun nam</p>
+                        <p className="text-sm text-emerald-600/70">x2</p>
                       </div>
                     </div>
-                    <span className="font-semibold text-gray-900">300.000đ</span>
+                    <span className="font-semibold text-emerald-900">300.000đ</span>
                   </div>
-                  <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <div className="flex justify-between items-center p-3 bg-emerald-50/50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center">
                         <Package className="w-5 h-5 text-primary-600" />
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900">Quần jean</p>
-                        <p className="text-sm text-gray-500">x1</p>
+                        <p className="font-medium text-emerald-900">Quần jean</p>
+                        <p className="text-sm text-emerald-600/70">x1</p>
                       </div>
                     </div>
-                    <span className="font-semibold text-gray-900">450.000đ</span>
+                    <span className="font-semibold text-emerald-900">450.000đ</span>
                   </div>
-                  <div className="pt-3 border-t border-gray-200">
-                    <div className="flex justify-between text-lg font-bold text-gray-900">
+                  <div className="pt-3 border-t border-emerald-100">
+                    <div className="flex justify-between text-lg font-bold text-emerald-900">
                       <span>Tổng cộng</span>
                       <span>750.000đ</span>
                     </div>
@@ -258,33 +258,33 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <p className="text-3xl sm:text-4xl font-bold text-gray-900">0đ</p>
-              <p className="text-gray-600 mt-1">Chi phí vận hành</p>
+              <p className="text-3xl sm:text-4xl font-bold text-emerald-900">0đ</p>
+              <p className="text-emerald-700 mt-1">Chi phí vận hành</p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl font-bold text-gray-900">1,000+</p>
-              <p className="text-gray-600 mt-1">Cửa hàng tin dùng</p>
+              <p className="text-3xl sm:text-4xl font-bold text-emerald-900">1,000+</p>
+              <p className="text-emerald-700 mt-1">Cửa hàng tin dùng</p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl font-bold text-gray-900">50K+</p>
-              <p className="text-gray-600 mt-1">Đơn hàng/tháng</p>
+              <p className="text-3xl sm:text-4xl font-bold text-emerald-900">50K+</p>
+              <p className="text-emerald-700 mt-1">Đơn hàng/tháng</p>
             </div>
             <div>
-              <p className="text-3xl sm:text-4xl font-bold text-gray-900">99.9%</p>
-              <p className="text-gray-600 mt-1">Uptime</p>
+              <p className="text-3xl sm:text-4xl font-bold text-emerald-900">99.9%</p>
+              <p className="text-emerald-700 mt-1">Uptime</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
+      <section id="features" className="py-20 bg-emerald-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-4">
               Tất cả tính năng bạn cần
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-emerald-700">
               Không giới hạn tính năng cơ bản. Chỉ nâng cấp khi bạn thực sự cần nhiều hơn.
             </p>
           </div>
@@ -294,8 +294,8 @@ export default function LandingPage() {
                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600 mb-4">
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-semibold text-emerald-900 mb-2">{feature.title}</h3>
+                <p className="text-emerald-700">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -306,10 +306,10 @@ export default function LandingPage() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-4">
               Bắt đầu trong 3 bước đơn giản
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-emerald-700">
               Không cần cài đặt phần mềm, không cần học sử dụng phức tạp.
             </p>
           </div>
@@ -317,8 +317,8 @@ export default function LandingPage() {
             {steps.map((step, idx) => (
               <div key={idx} className="relative">
                 <div className="text-5xl font-bold text-primary-100 mb-4">{step.number}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
+                <h3 className="text-xl font-semibold text-emerald-900 mb-3">{step.title}</h3>
+                <p className="text-emerald-700">{step.description}</p>
                 {idx < 2 && (
                   <div className="hidden md:block absolute top-8 left-full w-full h-0.5 bg-gradient-to-r from-primary-200 to-transparent ml-4" />
                 )}
@@ -332,21 +332,21 @@ export default function LandingPage() {
       <section id="pricing" className="py-20 bg-gradient-to-br from-gray-50 to-primary-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-4">
               Chọn gói phù hợp với bạn
             </h2>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-emerald-700">
               Miễn phí vĩnh viễn cho người mới bắt đầu. Nâng cấp khi bạn sẵn sàng.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Free Plan */}
             <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">FREE</h3>
-              <p className="text-gray-500 mb-6">Dành cho người mới bắt đầu</p>
+              <h3 className="text-xl font-semibold text-emerald-900 mb-2">FREE</h3>
+              <p className="text-emerald-600/70 mb-6">Dành cho người mới bắt đầu</p>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">0đ</span>
-                <span className="text-gray-500">/tháng</span>
+                <span className="text-4xl font-bold text-emerald-900">0đ</span>
+                <span className="text-emerald-600/70">/tháng</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {[
@@ -357,7 +357,7 @@ export default function LandingPage() {
                   'Báo cáo cơ bản',
                   'Hỗ trợ cộng đồng'
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-600">
+                  <li key={i} className="flex items-center gap-3 text-emerald-700">
                     <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                     {item}
                   </li>
@@ -375,11 +375,11 @@ export default function LandingPage() {
                   Phổ biến nhất
                 </span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">PRO</h3>
-              <p className="text-gray-500 mb-6">Dành cho cửa hàng phát triển</p>
+              <h3 className="text-xl font-semibold text-emerald-900 mb-2">PRO</h3>
+              <p className="text-emerald-600/70 mb-6">Dành cho cửa hàng phát triển</p>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">99.000đ</span>
-                <span className="text-gray-500">/tháng</span>
+                <span className="text-4xl font-bold text-emerald-900">99.000đ</span>
+                <span className="text-emerald-600/70">/tháng</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {[
@@ -391,7 +391,7 @@ export default function LandingPage() {
                   'Hỗ trợ ưu tiên (24h)',
                   'Multi-user (5 người)'
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-600">
+                  <li key={i} className="flex items-center gap-3 text-emerald-700">
                     <Check className="w-5 h-5 text-primary-500 flex-shrink-0" />
                     {item}
                   </li>
@@ -404,10 +404,10 @@ export default function LandingPage() {
 
             {/* Enterprise Plan */}
             <div className="bg-white rounded-2xl p-8 shadow-sm">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">ENTERPRISE</h3>
-              <p className="text-gray-500 mb-6">Dành cho chuỗi cửa hàng</p>
+              <h3 className="text-xl font-semibold text-emerald-900 mb-2">ENTERPRISE</h3>
+              <p className="text-emerald-600/70 mb-6">Dành cho chuỗi cửa hàng</p>
               <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">Liên hệ</span>
+                <span className="text-4xl font-bold text-emerald-900">Liên hệ</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {[
@@ -419,7 +419,7 @@ export default function LandingPage() {
                   'Hỗ trợ 24/7 phone',
                   'Dedicated account manager'
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-600">
+                  <li key={i} className="flex items-center gap-3 text-emerald-700">
                     <Check className="w-5 h-5 text-secondary-500 flex-shrink-0" />
                     {item}
                   </li>
@@ -437,27 +437,27 @@ export default function LandingPage() {
       <section id="faq" className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-4">
               Câu hỏi thường gặp
             </h2>
           </div>
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden">
+              <div key={idx} className="border border-emerald-100 rounded-xl overflow-hidden">
                 <button
-                  className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-emerald-50/50 transition-colors"
                   onClick={() => toggleFaq(idx)}
                 >
-                  <span className="font-medium text-gray-900 pr-4">{faq.question}</span>
+                  <span className="font-medium text-emerald-900 pr-4">{faq.question}</span>
                   {openFaq === idx ? (
-                    <ChevronUp className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    <ChevronUp className="w-5 h-5 text-emerald-600/70 flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                    <ChevronDown className="w-5 h-5 text-emerald-600/70 flex-shrink-0" />
                   )}
                 </button>
                 {openFaq === idx && (
                   <div className="px-5 pb-5">
-                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                    <p className="text-emerald-700 leading-relaxed">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -507,7 +507,7 @@ export default function LandingPage() {
                 </div>
                 <span className="text-xl font-bold text-white">ProDKT</span>
               </div>
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-emerald-400">
                 Phần mềm quản lý bán hàng miễn phí cho Hộ Kinh Doanh Việt Nam.
               </p>
             </div>
@@ -540,7 +540,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-emerald-600/70">
               © 2024 ProDKT. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
