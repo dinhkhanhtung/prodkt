@@ -50,6 +50,7 @@ export default function DashboardPage() {
   }, [storeId]);
 
   async function loadDashboardData() {
+    if (!storeId) return;
     try {
       const [productsData, customersData, ordersData, expensesData] = await Promise.all([
         getProducts(storeId),
