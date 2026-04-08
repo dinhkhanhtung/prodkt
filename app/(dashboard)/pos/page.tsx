@@ -161,12 +161,12 @@ export default function POSPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] bg-slate-50 -m-4 sm:-m-6 lg:-m-8 p-3 sm:p-4 lg:p-5 overflow-hidden">
+    <div className="h-[calc(100vh-4rem)] bg-emerald-50/50 -m-4 sm:-m-6 lg:-m-8 p-3 sm:p-4 lg:p-5 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg font-bold text-slate-900">Bán hàng POS</h1>
-          <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{cart.length} SP</span>
+          <h1 className="text-lg font-bold text-emerald-900">Bán hàng POS</h1>
+          <span className="text-xs text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">{cart.length} SP</span>
         </div>
       </div>
 
@@ -174,15 +174,15 @@ export default function POSPage() {
         {/* Products Section */}
         <div className="lg:col-span-2 space-y-4">
           {/* Search */}
-          <div className="bg-white rounded-lg border border-slate-200">
+          <div className="bg-white rounded-lg border border-emerald-100 shadow-sm">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400" />
               <input
                 type="text"
                 placeholder="Tìm sản phẩm..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm text-slate-900 placeholder-slate-400"
+                className="w-full pl-9 pr-3 py-2 border-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm text-emerald-900 placeholder-emerald-400/70"
               />
             </div>
           </div>
@@ -194,9 +194,9 @@ export default function POSPage() {
                 key={product.id}
                 onClick={() => addToCart(product)}
                 disabled={product.stock <= 0}
-                className={`group bg-white rounded-lg border border-slate-200 p-2 text-left transition-all ${
+                className={`group bg-white rounded-lg border border-emerald-100 p-2 text-left transition-all shadow-sm ${
                   product.stock > 0
-                    ? 'hover:shadow-md hover:border-violet-300'
+                    ? 'hover:shadow-md hover:border-emerald-300 hover:ring-1 hover:ring-emerald-200'
                     : 'opacity-50 cursor-not-allowed'
                 }`}
               >
@@ -207,13 +207,13 @@ export default function POSPage() {
                     className="w-full h-16 object-cover rounded-md mb-2"
                   />
                 ) : (
-                  <div className="w-full h-16 bg-gradient-to-br from-slate-100 to-slate-200 rounded-md mb-2 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-slate-400" />
+                  <div className="w-full h-16 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-md mb-2 flex items-center justify-center">
+                    <Package className="w-6 h-6 text-emerald-400" />
                   </div>
                 )}
-                <h3 className="font-medium text-slate-900 text-xs truncate">{product.name}</h3>
+                <h3 className="font-medium text-emerald-900 text-xs truncate">{product.name}</h3>
                 <div className="flex items-center justify-between mt-1">
-                  <p className="text-violet-600 font-bold text-xs">{formatCurrency(product.price)}</p>
+                  <p className="text-orange-600 font-bold text-xs">{formatCurrency(product.price)}</p>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                     product.stock > 10 
                       ? 'bg-emerald-100 text-emerald-700' 
@@ -232,10 +232,10 @@ export default function POSPage() {
         {/* Cart Section */}
         <div className="space-y-2 overflow-y-auto max-h-full">
           {/* Cart Items */}
-          <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
-            <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
-              <h2 className="font-semibold text-sm text-slate-900 flex items-center gap-1.5">
-                <ShoppingCart className="w-4 h-4 text-violet-600" />
+          <div className="bg-white rounded-lg border border-emerald-100 overflow-hidden shadow-sm">
+            <div className="px-3 py-2 border-b border-emerald-50 flex items-center justify-between">
+              <h2 className="font-semibold text-sm text-emerald-900 flex items-center gap-1.5">
+                <ShoppingCart className="w-4 h-4 text-emerald-600" />
                 Giỏ ({cart.length})
               </h2>
               {cart.length > 0 && (
@@ -257,8 +257,8 @@ export default function POSPage() {
                 {cart.map((item) => (
                   <div key={item.id} className="flex items-center gap-2 p-2 border-b border-slate-50 last:border-0">
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-xs text-slate-900 truncate">{item.name}</p>
-                      <p className="text-[10px] text-violet-600">{formatCurrency(item.price)}</p>
+                      <p className="font-medium text-xs text-emerald-900 truncate">{item.name}</p>
+                      <p className="text-[10px] text-emerald-600">{formatCurrency(item.price)}</p>
                     </div>
                     <div className="flex items-center gap-0.5">
                       <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 flex items-center justify-center text-slate-600 hover:bg-slate-100 rounded">
@@ -279,45 +279,45 @@ export default function POSPage() {
           </div>
 
           {/* Customer Info */}
-          <div className="bg-white rounded-lg border border-slate-200 p-2 space-y-2">
+          <div className="bg-white rounded-lg border border-emerald-100 p-2 space-y-2 shadow-sm">
             <input
               type="text"
               placeholder="Tên KH"
               value={customer.name}
               onChange={(e) => setCustomer((prev) => ({ ...prev, name: e.target.value }))}
-              className="w-full border border-slate-200 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="w-full border border-emerald-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 text-emerald-900 placeholder-emerald-400/70"
             />
             <input
               type="tel"
               placeholder="SĐT"
               value={customer.phone}
               onChange={(e) => setCustomer((prev) => ({ ...prev, phone: e.target.value }))}
-              className="w-full border border-slate-200 rounded px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-violet-500"
+              className="w-full border border-emerald-200 rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500 text-emerald-900 placeholder-emerald-400/70"
             />
           </div>
 
           {/* Payment Summary */}
-          <div className="bg-white rounded-lg border border-slate-200 p-3 space-y-2">
+          <div className="bg-white rounded-lg border border-emerald-100 p-3 space-y-2 shadow-sm">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Tạm tính:</span>
-              <span className="font-medium">{formatCurrency(subtotal)}</span>
+              <span className="text-emerald-600">Tạm tính:</span>
+              <span className="font-medium text-emerald-900">{formatCurrency(subtotal)}</span>
             </div>
             
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-500">Giảm:</span>
+              <span className="text-emerald-600">Giảm:</span>
               <input
                 type="number"
                 min="0"
                 max={subtotal}
                 value={discount}
                 onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                className="w-20 border border-slate-200 rounded px-2 py-1 text-xs text-right"
+                className="w-20 border border-emerald-200 rounded-lg px-2 py-1 text-xs text-right text-emerald-900 focus:outline-none focus:ring-1 focus:ring-emerald-500"
               />
             </div>
             
-            <div className="flex justify-between font-bold text-base border-t border-slate-100 pt-1">
-              <span>Tổng:</span>
-              <span className="text-violet-600">{formatCurrency(finalAmount)}</span>
+            <div className="flex justify-between font-bold text-base border-t border-emerald-100 pt-1">
+              <span className="text-emerald-900">Tổng:</span>
+              <span className="text-emerald-600">{formatCurrency(finalAmount)}</span>
             </div>
 
             {/* Payment Method */}
@@ -330,10 +330,10 @@ export default function POSPage() {
                 <button
                   key={method.key}
                   onClick={() => setPaymentMethod(method.key as any)}
-                  className={`py-1.5 px-1 text-[10px] rounded border ${
+                  className={`py-1.5 px-1 text-[10px] rounded-lg border ${
                     paymentMethod === method.key
-                      ? 'bg-violet-50 border-violet-500 text-violet-700'
-                      : 'border-slate-200 text-slate-600'
+                      ? 'bg-emerald-500 border-emerald-500 text-white'
+                      : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'
                   }`}
                 >
                   {method.label}
@@ -343,25 +343,25 @@ export default function POSPage() {
 
             {paymentMethod !== 'debt' && (
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-500">Khách trả:</span>
+                <span className="text-emerald-600">Khách trả:</span>
                 <input
                   type="number"
                   min="0"
                   value={paidAmount}
                   onChange={(e) => setPaidAmount(parseFloat(e.target.value) || 0)}
-                  className="w-20 border border-slate-200 rounded px-2 py-1 text-xs text-right"
+                  className="w-20 border border-emerald-200 rounded-lg px-2 py-1 text-xs text-right text-emerald-900 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 />
               </div>
             )}
 
             {debtAmount > 0 && (
-              <div className="flex justify-between text-xs bg-red-50 p-1.5 rounded">
+              <div className="flex justify-between text-xs bg-red-50 p-1.5 rounded-lg">
                 <span className="text-red-600">Còn nợ:</span>
                 <span className="font-semibold text-red-600">{formatCurrency(debtAmount)}</span>
               </div>
             )}
             {paidAmount > finalAmount && (
-              <div className="flex justify-between text-xs bg-emerald-50 p-1.5 rounded">
+              <div className="flex justify-between text-xs bg-emerald-50 p-1.5 rounded-lg">
                 <span className="text-emerald-600">Thừa:</span>
                 <span className="font-semibold text-emerald-600">{formatCurrency(paidAmount - finalAmount)}</span>
               </div>
@@ -371,14 +371,14 @@ export default function POSPage() {
               <button
                 onClick={clearCart}
                 disabled={cart.length === 0}
-                className="flex-1 py-2 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg font-medium disabled:opacity-50"
+                className="flex-1 py-2 text-xs text-emerald-600 bg-emerald-50 hover:bg-emerald-100 rounded-lg font-medium disabled:opacity-50"
               >
                 Hủy
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={cart.length === 0 || submitting}
-                className="flex-[2] py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg font-medium text-xs disabled:opacity-50 flex items-center justify-center gap-1"
+                className="flex-[2] py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium text-xs disabled:opacity-50 flex items-center justify-center gap-1 shadow-lg shadow-orange-500/30"
               >
                 {submitting ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   : <><CheckCircle className="w-4 h-4" /> Thanh toán</>}
