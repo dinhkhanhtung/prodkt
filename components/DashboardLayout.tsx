@@ -21,6 +21,7 @@ import {
   Bell,
   Plus,
   ChevronDown,
+  Wallet,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -73,6 +74,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { name: 'Nhà cung cấp', href: '/suppliers', icon: Truck },
     { name: 'Bán hàng POS', href: '/pos', icon: ShoppingCart, highlight: true },
     { name: 'Hóa đơn', href: '/orders', icon: Receipt },
+    { name: 'Chi phí', href: '/expenses', icon: Wallet },
     { name: 'Cài đặt', href: '/settings', icon: Settings },
     ...(isAdmin ? [{ name: 'Quản trị', href: '/admin', icon: Shield }] : []),
   ];

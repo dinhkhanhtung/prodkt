@@ -17,9 +17,7 @@ import {
 import { db } from './firebase';
 
 // Generic type for data with id
-export interface WithId {
-  id: string;
-}
+export type WithId<T = Record<string, any>> = T & { id: string };
 
 // Collection names
 const COLLECTIONS = {
@@ -480,3 +478,96 @@ export async function getUserSubscription(userId: string): Promise<Subscription 
   if (!userDoc.exists()) return null;
   return userDoc.data().subscription || null;
 }
+
+// ==================== EXPENSES ====================
+
+export interface Expense {
+  id?: string;
+  userId: string;
+  storeId: string;
+  category: 'rent' | 'salary' | 'utilities' | 'marketing' | 'inventory' | 'equipment' | 'maintenance' | 'other';
+  amount: number;
+  description: string;
+  date: string; // YYYY-MM-DD
+  notes?: string;
+  attachments?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+const EXPENSES_COLLECTION = 'expenses';
+
+function getExpensesCollection(storeId: string) {
+  return collection(db, 'stores', storeId, EXPENSES_COLLECTION);
+}
+
+export async function getExpenses(storeId: string, startDate?: string, endDate?: string): Promise<WithId<Expense>[]> {
+  const expensesCol = getExpensesCollection(storeId);
+  let q = query(expensesCol, orderBy('date', 'desc'));
+  
+  if (startDate && endDate) {
+    q = query(q, where('date', '>=', startDate), where('date', '<=', endDate));
+  }
+  
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as WithId<Expense>));
+}
+
+export async function getExpensesByCategory(storeId: string, month: string): Promise<{ category: string; total: number }[]> {
+  const expensesCol = getExpensesCollection(storeId);
+  const startOfMonth = `${month}-01`;
+  const endOfMonth = `${month}-31`;
+  
+  const q = query(
+    expensesCol,
+    where('date', '>=', startOfMonth),
+    where('date', '<=', endOfMonth)
+  );
+  
+  const querySnapshot = await getDocs(q);
+  const expenses = querySnapshot.docs.map(doc => doc.data() as Expense);
+  
+  const grouped = expenses.reduce((acc, expense) => {
+    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    return acc;
+  }, {} as Record<string, number>);
+  
+  return Object.entries(grouped).map(([category, total]) => ({ category, total }));
+}
+
+export async function addExpense(userId: string, storeId: string, data: Omit<Expense, 'id' | 'userId' | 'storeId' | 'createdAt' | 'updatedAt'>): Promise<string> {
+  const expenseData: Expense = {
+    ...data,
+    userId,
+    storeId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  
+  const docRef = await addDoc(getExpensesCollection(storeId), expenseData);
+  return docRef.id;
+}
+
+export async function updateExpense(storeId: string, expenseId: string, data: Partial<Omit<Expense, 'id' | 'userId' | 'storeId' | 'createdAt'>>): Promise<void> {
+  const expenseRef = doc(db, 'stores', storeId, EXPENSES_COLLECTION, expenseId);
+  await updateDoc(expenseRef, {
+    ...data,
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+export async function deleteExpense(storeId: string, expenseId: string): Promise<void> {
+  const expenseRef = doc(db, 'stores', storeId, EXPENSES_COLLECTION, expenseId);
+  await deleteDoc(expenseRef);
+}
+
+export const EXPENSE_CATEGORIES = {
+  rent: 'Tiền thuê mặt bằng',
+  salary: 'Lương nhân viên',
+  utilities: 'Điện nước internet',
+  marketing: 'Marketing quảng cáo',
+  inventory: 'Nhập hàng',
+  equipment: 'Mua sắm thiết bị',
+  maintenance: 'Sửa chữa bảo trì',
+  other: 'Chi phí khác',
+} as const;
