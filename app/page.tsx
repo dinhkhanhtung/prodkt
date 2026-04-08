@@ -43,67 +43,62 @@ export default function LandingPage() {
     {
       icon: <ShoppingCart className="w-6 h-6" />,
       title: 'Bán Hàng POS',
-      description: 'Giao diện bán hàng trực quan, xử lý đơn hàng nhanh chóng chỉ với vài click chuột.'
+      description: 'Giao diện bán hàng trực quan, xử lý đơn hàng nhanh chóng.'
     },
     {
       icon: <Package className="w-6 h-6" />,
       title: 'Quản Lý Tồn Kho',
-      description: 'Theo dõi số lượng tồn kho real-time, cảnh báo khi sản phẩm sắp hết.'
-    },
-    {
-      icon: <ImageIcon className="w-6 h-6" />,
-      title: 'Lưu Trữ Ảnh Miễn Phí',
-      description: 'Upload ảnh sản phẩm không giới hạn qua ImgBB, không tốn phí hosting.'
+      description: 'Theo dõi tồn kho real-time, cảnh báo sản phẩm sắp hết.'
     },
     {
       icon: <Users className="w-6 h-6" />,
       title: 'Quản Lý Công Nợ',
-      description: 'Theo dõi công nợ khách hàng và nhà cung cấp, tự động cập nhật sau mỗi giao dịch.'
+      description: 'Theo dõi công nợ khách hàng và nhà cung cấp.'
     },
     {
       icon: <TrendingUp className="w-6 h-6" />,
       title: 'Báo Cáo Thuế',
-      description: 'Xuất báo cáo doanh thu, chi phí, lợi nhuận theo chuẩn Hộ Kinh Doanh.'
+      description: 'Xuất báo cáo doanh thu, chi phí, lợi nhuận.'
     },
     {
       icon: <Shield className="w-6 h-6" />,
       title: 'An Toàn Dữ Liệu',
-      description: 'Dữ liệu được lưu trữ trên Firebase Google, backup tự động, bảo mật cao.'
+      description: 'Lưu trữ trên Firebase, backup tự động, bảo mật cao.'
     },
     {
       icon: <Sparkles className="w-6 h-6" />,
       title: 'AI Phân Tích',
-      description: 'Phân tích dữ liệu bằng AI, đưa ra insights và gợi ý cải thiện doanh thu.'
+      description: 'Phân tích dữ liệu bằng AI, gợi ý cải thiện doanh thu.'
     },
     {
       icon: <MessageCircle className="w-6 h-6" />,
       title: 'Chat & Đánh Giá',
-      description: 'Nhắn tin trực tiếp với đối tác, hệ thống đánh giá uy tín dựa trên giao dịch.'
+      description: 'Nhắn tin với đối tác, đánh giá uy tín sau giao dịch.'
     },
     {
       icon: <Trophy className="w-6 h-6" />,
       title: 'Hall of Fame',
-      description: 'Bảng xếp hạng đối tác uy tín nhất, giúp tìm kiếm đối tác đáng tin cậy.'
+      description: 'Bảng xếp hạng đối tác uy tín nhất.'
     },
     {
       icon: <Store className="w-6 h-6" />,
       title: 'Cộng Đồng B2B',
-      description: 'Mua bán sỉ giữa các đối tác, tìm nguồn hàng giá tốt trong cộng đồng.'
+      description: 'Mua bán sỉ giữa các đối tác, tìm nguồn hàng giá tốt.'
     },
     {
       icon: <Wallet className="w-6 h-6" />,
-      title: 'Tài Chính Cá Nhân',
-      description: 'Quản lý thu chi cá nhân, theo dõi ngân sách riêng biệt với tài khoản shop.'
-    },
-    {
-      icon: <HandCoins className="w-6 h-6" />,
-      title: 'Quản Lý Nợ Cá Nhân',
-      description: 'Theo dõi nợ vay/cho vay cá nhân, nhắc nhở ngày đến hạn.'
+      title: 'Tài Chính & Nợ',
+      description: 'Quản lý thu chi, ngân sách và nợ cá nhân.'
     },
     {
       icon: <Repeat className="w-6 h-6" />,
       title: 'Giao Dịch Định Kỳ',
-      description: 'Tự động hóa các giao dịch định kỳ như thuê bao, trả góp, lương.'
+      description: 'Tự động hóa giao dịch định kỳ, thuê bao, trả góp.'
+    },
+    {
+      icon: <ImageIcon className="w-6 h-6" />,
+      title: 'Lưu Trữ Ảnh',
+      description: 'Upload ảnh sản phẩm không giới hạn, không tốn phí.'
     }
   ];
 
@@ -385,7 +380,7 @@ export default function LandingPage() {
               Không giới hạn tính năng cơ bản. Chỉ nâng cấp khi bạn thực sự cần nhiều hơn.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {features.map((feature, idx) => (
               <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
                 <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600 mb-4">
