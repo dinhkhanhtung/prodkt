@@ -17,7 +17,18 @@ import {
   Menu,
   X,
   Play,
-  Star
+  Star,
+  Sparkles,
+  MessageCircle,
+  Trophy,
+  Store,
+  Wallet,
+  HandCoins,
+  Repeat,
+  Quote,
+  Newspaper,
+  Calendar,
+  ArrowUpRight
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -58,6 +69,92 @@ export default function LandingPage() {
       icon: <Shield className="w-6 h-6" />,
       title: 'An Toàn Dữ Liệu',
       description: 'Dữ liệu được lưu trữ trên Firebase Google, backup tự động, bảo mật cao.'
+    },
+    {
+      icon: <Sparkles className="w-6 h-6" />,
+      title: 'AI Phân Tích',
+      description: 'Phân tích dữ liệu bằng AI, đưa ra insights và gợi ý cải thiện doanh thu.'
+    },
+    {
+      icon: <MessageCircle className="w-6 h-6" />,
+      title: 'Chat & Đánh Giá',
+      description: 'Nhắn tin trực tiếp với đối tác, hệ thống đánh giá uy tín dựa trên giao dịch.'
+    },
+    {
+      icon: <Trophy className="w-6 h-6" />,
+      title: 'Hall of Fame',
+      description: 'Bảng xếp hạng đối tác uy tín nhất, giúp tìm kiếm đối tác đáng tin cậy.'
+    },
+    {
+      icon: <Store className="w-6 h-6" />,
+      title: 'Cộng Đồng B2B',
+      description: 'Mua bán sỉ giữa các đối tác, tìm nguồn hàng giá tốt trong cộng đồng.'
+    },
+    {
+      icon: <Wallet className="w-6 h-6" />,
+      title: 'Tài Chính Cá Nhân',
+      description: 'Quản lý thu chi cá nhân, theo dõi ngân sách riêng biệt với tài khoản shop.'
+    },
+    {
+      icon: <HandCoins className="w-6 h-6" />,
+      title: 'Quản Lý Nợ Cá Nhân',
+      description: 'Theo dõi nợ vay/cho vay cá nhân, nhắc nhở ngày đến hạn.'
+    },
+    {
+      icon: <Repeat className="w-6 h-6" />,
+      title: 'Giao Dịch Định Kỳ',
+      description: 'Tự động hóa các giao dịch định kỳ như thuê bao, trả góp, lương.'
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: 'Nguyễn Văn A',
+      role: 'Chủ shop thời trang',
+      content: 'ProDKT giúp mình quản lý shop dễ dàng hơn rất nhiều. Giao diện đẹp, dễ dùng, mà lại miễn phí!',
+      avatar: 'A'
+    },
+    {
+      name: 'Trần Thị B',
+      role: 'Chủ cửa hàng điện tử',
+      content: 'Tính năng quản lý công nợ và báo cáo thuế rất hữu ích cho shop nhỏ như mình. Recommend!',
+      avatar: 'B'
+    },
+    {
+      name: 'Lê Văn C',
+      role: 'Đại lý sỉ',
+      content: 'Hall of Fame và cộng đồng B2B giúp mình tìm được nhiều đối tác uy tín. Tuyệt vời!',
+      avatar: 'C'
+    }
+  ];
+
+  const blogPosts = [
+    {
+      id: 1,
+      title: '10 Mẹo Quản Lý Kho Hiệu Quả Cho Shop Nhỏ',
+      excerpt: 'Hướng dẫn chi tiết cách tối ưu hóa quy trình quản lý tồn kho, giảm thiểu hàng tồn và tăng doanh thu.',
+      category: 'Quản lý kho',
+      date: '15/03/2024',
+      readTime: '5 phút',
+      image: '📦'
+    },
+    {
+      id: 2,
+      title: 'Cách Sử Dụng AI Phân Tích Để Tăng Doanh Thu',
+      excerpt: 'Khám phá tính năng AI Phân Tích của ProDKT và cách áp dụng insights để cải thiện kinh doanh.',
+      category: 'AI & Công nghệ',
+      date: '10/03/2024',
+      readTime: '7 phút',
+      image: '🤖'
+    },
+    {
+      id: 3,
+      title: 'Hướng Dẫn Bán Hàng Sỉ Trên Cộng Đồng B2B',
+      excerpt: 'Tìm hiểu cách tìm kiếm đối tác uy tín và mở rộng kênh bán hàng qua Hall of Fame.',
+      category: 'Bán hàng',
+      date: '05/03/2024',
+      readTime: '6 phút',
+      image: '🤝'
     }
   ];
 
@@ -190,7 +287,7 @@ export default function LandingPage() {
                   Xem demo
                 </a>
               </div>
-              <div className="mt-8 flex items-center gap-4 text-sm text-emerald-600/70">
+              <div className="mt-8 flex items-center gap-4 text-sm text-emerald-700">
                 <div className="flex -space-x-2">
                   {[1,2,3,4].map(i => (
                     <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 border-2 border-white flex items-center justify-center text-white text-xs font-bold">
@@ -210,7 +307,7 @@ export default function LandingPage() {
                     <div className="w-3 h-3 rounded-full bg-yellow-400" />
                     <div className="w-3 h-3 rounded-full bg-green-400" />
                   </div>
-                  <span className="text-sm text-emerald-600/70">ProDKT POS</span>
+                  <span className="text-sm text-emerald-700 font-medium">ProDKT POS</span>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center p-3 bg-emerald-50/50 rounded-lg">
@@ -220,7 +317,7 @@ export default function LandingPage() {
                       </div>
                       <div>
                         <p className="font-medium text-emerald-900">Áo thun nam</p>
-                        <p className="text-sm text-emerald-600/70">x2</p>
+                        <p className="text-sm text-emerald-600">x2</p>
                       </div>
                     </div>
                     <span className="font-semibold text-emerald-900">300.000đ</span>
@@ -232,7 +329,7 @@ export default function LandingPage() {
                       </div>
                       <div>
                         <p className="font-medium text-emerald-900">Quần jean</p>
-                        <p className="text-sm text-emerald-600/70">x1</p>
+                        <p className="text-sm text-emerald-600">x1</p>
                       </div>
                     </div>
                     <span className="font-semibold text-emerald-900">450.000đ</span>
@@ -429,6 +526,95 @@ export default function LandingPage() {
                 Liên hệ bán hàng
               </a>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gradient-to-br from-primary-50 to-emerald-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-4">
+              Khách hàng nói gì về ProDKT
+            </h2>
+            <p className="text-lg text-emerald-700">
+              Hơn 1,000+ cửa hàng đang tin dùng và hài lòng.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((item, idx) => (
+              <div key={idx} className="bg-white rounded-2xl p-6 shadow-sm">
+                <Quote className="w-8 h-8 text-primary-400 mb-4" />
+                <p className="text-emerald-700 mb-6">{item.content}</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold">
+                    {item.avatar}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-emerald-900">{item.name}</p>
+                    <p className="text-sm text-emerald-600">{item.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section id="blog" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-100 text-primary-700 rounded-full text-sm font-medium mb-4">
+              <Newspaper className="w-4 h-4" />
+              Blog & Tin tức
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-emerald-900 mb-4">
+              Kiến thức kinh doanh
+            </h2>
+            <p className="text-lg text-emerald-700">
+              Hướng dẫn, mẹo hay và tin tức cập nhật để giúp shop của bạn phát triển.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {blogPosts.map((post) => (
+              <article key={post.id} className="bg-white rounded-2xl border border-emerald-100 shadow-sm hover:shadow-lg transition-shadow overflow-hidden group">
+                <div className="h-48 bg-gradient-to-br from-primary-50 to-emerald-50 flex items-center justify-center text-6xl">
+                  {post.image}
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-medium rounded-full">
+                      {post.category}
+                    </span>
+                    <span className="text-sm text-emerald-600 flex items-center gap-1">
+                      <Calendar className="w-4 h-4" />
+                      {post.date}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-xl text-emerald-900 mb-2 group-hover:text-primary-600 transition-colors line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-emerald-700 mb-4 line-clamp-3">
+                    {post.excerpt}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-emerald-600">{post.readTime} đọc</span>
+                    <button className="text-primary-600 font-medium flex items-center gap-1 hover:gap-2 transition-all">
+                      Đọc thêm <ArrowUpRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-50 text-emerald-700 rounded-lg font-medium hover:bg-emerald-100 transition-colors"
+            >
+              Xem tất cả bài viết <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
